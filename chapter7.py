@@ -47,9 +47,18 @@ temperature_corrected_gradient_prime_t_delta[:] = np.nan
 
 #print(density_corrected_gradient_prime_t_delta)
 
-#create arrays to store results
-T = np.empty(TIME_STEPS)
-T[:] = np.nan
+#create arrays to store normalised results
+density = np.empty(TIME_STEPS)
+temperature = np.empty(TIME_STEPS)
+pressure = np.empty(TIME_STEPS)
+mach_nos = np.empty(TIME_STEPS)
+
+density[:] = np.nan
+temperature[:] = np.nan
+pressure[:] = np.nan
+mach_nos[:] = np.nan
+
+results = [density, temperature, pressure, mach_nos]
 
 #begin maccormack scheme
 for jj in range(TIME_STEPS):
@@ -239,16 +248,43 @@ for jj in range(TIME_STEPS):
   #print(jj)
 
   #store results
-  T[jj] = temperature_prime_t[15]
+  density[jj] = density_prime_t[15]
+  temperature[jj] = temperature_prime_t[15]
+  pressure[jj] = pressure_prime_t[15]
+  mach_nos[jj] = velocity_prime_t[15]/np.power(temperature_prime_t[15],0.5)
 
 #print(velocity_prime_t.shape)
 #print(X.shape)
 #print(area_prime_t[15])
 
 #plotting 
-plt.scatter(X, T)
-plt.xlim(0, TIME_STEPS)
-plt.ylim(0.6,1)
-plt.xlabel("Number of Time Steps")
-plt.ylabel(r"$\frac{T}{T_o}$",rotation=0)
+fig, axs = plt.subplots(4)
+fig.suptitle('Results')
+plt.subplots_adjust(left=0.1,
+                    bottom=0.1, 
+                    right=0.9, 
+                    top=0.9, 
+                    wspace=0.4, 
+                    hspace=0.4)
+
+for kk in range(4):
+  axs[kk].scatter(X, results[kk], s=1, color='black')
+  axs[kk].set_xlim(0, TIME_STEPS)
+
+  if kk == 0:
+    axs[kk].set_ylim(0.5,1)
+    axs[kk].set_ylabel(r"$\frac{D}{D_o}$", rotation=0)
+  elif kk == 1:
+    axs[kk].set_ylim(0.6,1)
+    axs[kk].set_ylabel(r"$\frac{T}{T_o}$", rotation=0)
+  elif kk == 2:
+    axs[kk].set_ylim(0.3,1)
+    axs[kk].set_ylabel(r"$\frac{P}{P_o}$", rotation=0)
+  else:
+    axs[kk].set_ylim(0.8,1.8)
+    axs[kk].set_ylabel(r"$M$", rotation=0)
+    axs[kk].set_xlabel("Number of Time Steps")
+
+  axs[kk].yaxis.set_label_coords(0.9, 0.6)
+
 plt.show()
