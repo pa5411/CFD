@@ -6,8 +6,6 @@ NOZZLE_LENGTH_PRIME = 3 #centimeters
 GAMMA = 1.4
 TIME_STEPS = 1400
 COURANT_NUMBER = 0.5
-
-#fixed program settings
 GRID_SPACING = 0.1
 
 #generate 1D grid
