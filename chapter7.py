@@ -213,14 +213,16 @@ for jj in range(TIME_STEPS):
 
   #print(velocity_prime_t[1])
 
-  #calculate inflow boundary conditions 
+  #set fixed boundary conditions - needed to avoid nans in update above
   density_prime_t[0] = 1
-  velocity_prime_t[0] = 2*velocity_prime_t[1] - velocity_prime_t[2]
   temperature_prime_t[0] = 1
+
+  #calculate floating inflow boundary conditions 
+  velocity_prime_t[0] = 2*velocity_prime_t[1] - velocity_prime_t[2]
   
   #print(velocity_prime_t[0])
 
-  #calculate outflow boundary conditions 
+  #calculate floating outflow boundary conditions 
   density_prime_t[number_of_grid_points-1] = \
     2*density_prime_t[number_of_grid_points-2] \
     - density_prime_t[number_of_grid_points-3]
