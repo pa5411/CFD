@@ -234,9 +234,12 @@ for jj in range(TIME_STEPS):
   T[jj] = temperature_prime_t[15]
 
 X = np.linspace(0,TIME_STEPS-1,TIME_STEPS,dtype=int)
-print(velocity_prime_t.shape)
-print(X.shape)
-print(area_prime_t[15])
+
+#print(velocity_prime_t.shape)
+#print(X.shape)
+#print(area_prime_t[15])
+
+#plotting 
 plt.scatter(X, T)
 plt.xlim(0, TIME_STEPS)
 plt.ylim(0.6,1)
