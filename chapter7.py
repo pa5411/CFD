@@ -13,6 +13,9 @@ GRID_SPACING = 0.1
 number_of_grid_points = int(NOZZLE_LENGTH_PRIME/GRID_SPACING + 1)
 x_grid = np.linspace(0,NOZZLE_LENGTH_PRIME,number_of_grid_points)
 
+#generate number of steps array
+X = np.linspace(0,TIME_STEPS-1,TIME_STEPS,dtype=int)
+
 #generate initial conditions
 density_prime_t = 1 - 0.3146*x_grid
 temperature_prime_t = 1 - 0.2314*x_grid
@@ -232,8 +235,6 @@ for jj in range(TIME_STEPS):
   
   #print(jj)
   T[jj] = temperature_prime_t[15]
-
-X = np.linspace(0,TIME_STEPS-1,TIME_STEPS,dtype=int)
 
 #print(velocity_prime_t.shape)
 #print(X.shape)
