@@ -16,7 +16,7 @@ x_grid = np.linspace(0,NOZZLE_LENGTH_PRIME,number_of_grid_points)
 #generate number of steps array
 X = np.linspace(0,TIME_STEPS-1,TIME_STEPS,dtype=int)
 
-#generate initial conditions
+#generate initial conditions and arrays
 density_prime_t = 1 - 0.3146*x_grid
 temperature_prime_t = 1 - 0.2314*x_grid
 velocity_prime_t = (0.1 + 1.09*x_grid) \
@@ -36,7 +36,7 @@ density_corrected_gradient_prime_t_delta = np.empty(number_of_grid_points)
 velocity_corrected_gradient_prime_t_delta = np.empty(number_of_grid_points)
 temperature_corrected_gradient_prime_t_delta = np.empty(number_of_grid_points)
 
-#assign nans to all elements to facilitate detection of errors 
+#assign NaNs to all elements to facilitate detection of errors 
 speed_of_sound[:] = np.nan
 pressure_prime_t[:] = np.nan
 density_gradient_prime_t[:] = np.nan
@@ -48,10 +48,11 @@ temperature_corrected_gradient_prime_t_delta[:] = np.nan
 
 #print(density_corrected_gradient_prime_t_delta)
 
-#store results
+#create arrays to store results
 T = np.empty(TIME_STEPS)
 T[:] = np.nan
 
+#begin maccormack scheme
 for jj in range(TIME_STEPS):
 
   #predictor step - calculate gradients at internal points 
@@ -187,7 +188,7 @@ for jj in range(TIME_STEPS):
 
   #print(density_corrected_gradient_prime_t_delta)
 
-  # calculate average time derivatives
+  #calculate average time derivatives
   density_gradient_avg = \
     (density_gradient_prime_t + density_corrected_gradient_prime_t_delta) \
     *0.5
@@ -236,6 +237,8 @@ for jj in range(TIME_STEPS):
     -temperature_prime_t[number_of_grid_points-3]
   
   #print(jj)
+
+  #store results
   T[jj] = temperature_prime_t[15]
 
 #print(velocity_prime_t.shape)
