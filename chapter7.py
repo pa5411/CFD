@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 NOZZLE_LENGTH_PRIME = 3 #centimeters
 GAMMA = 1.4
 TIME_STEPS = 1400
+COURANT_NUMBER = 0.5
 
 #fixed program settings
 GRID_SPACING = 0.1
@@ -90,7 +91,8 @@ for jj in range(TIME_STEPS):
   
   #time step
   speed_of_sound_prime = np.power(temperature_prime_t,0.5)
-  time_steps_prime = 0.5*GRID_SPACING/(speed_of_sound_prime + velocity_prime_t)
+  time_steps_prime = \
+    COURANT_NUMBER*GRID_SPACING/(speed_of_sound_prime + velocity_prime_t)
   min_time_step_prime = np.min(time_steps_prime)
 
   #print(min_time_step_prime)
