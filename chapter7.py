@@ -259,7 +259,7 @@ for jj in range(TIME_STEPS):
 
 #plotting 
 fig, axs = plt.subplots(4)
-fig.suptitle('Results')
+fig.suptitle('Fig 7.9')
 plt.subplots_adjust(left=0.1,
                     bottom=0.1, 
                     right=0.9, 
