@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 NOZZLE_LENGTH_PRIME = 3 #centimeters
 GAMMA = 1.4
 TIME_STEPS = 1400
-COURANT_NUMBER = 0.25
+COURANT_NUMBER = 0.5
 GRID_SPACING = 0.1
 INT_PRECISION = np.int16
 FLOAT_PRECISION = np.float16
