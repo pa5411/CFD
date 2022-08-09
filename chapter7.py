@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
 #User fixed settings 
@@ -49,6 +50,7 @@ temperature_corrected_gradient_prime_t_delta[:] = np.nan
 
 #create arrays to store normalised results
 density = np.empty(TIME_STEPS)
+velocity = np.empty(TIME_STEPS)
 temperature = np.empty(TIME_STEPS)
 pressure = np.empty(TIME_STEPS)
 mach_nos = np.empty(TIME_STEPS)
@@ -56,6 +58,7 @@ density_gradient_average = np.empty(TIME_STEPS)
 velocity_gradient_average = np.empty(TIME_STEPS)
 
 density[:] = np.nan
+velocity[:] = np.nan
 temperature[:] = np.nan
 pressure[:] = np.nan
 mach_nos[:] = np.nan
@@ -225,8 +228,6 @@ for jj in range(TIME_STEPS):
     temperature_prime_t + temperature_gradient_avg*min_time_step_prime
   pressure_prime_t = density_prime_t * temperature_prime_t
 
-  #print(velocity_prime_t[1])
-
   #set fixed boundary conditions - needed to avoid nans in update above
   density_prime_t[0] = 1
   temperature_prime_t[0] = 1
@@ -253,6 +254,7 @@ for jj in range(TIME_STEPS):
 
   #store results
   density[jj] = density_prime_t[15]
+  velocity[jj] = velocity_prime_t[15]
   temperature[jj] = temperature_prime_t[15]
   pressure[jj] = pressure_prime_t[15]
   mach_nos[jj] = velocity_prime_t[15]/np.power(temperature_prime_t[15],0.5)
@@ -303,6 +305,21 @@ plt.xlabel("Number of Time Steps")
 plt.ylabel("Residuals")
 plt.yscale('log')
 
-plt.show()
+#plt.show()
 
 #np.savetxt(r'test1.txt', density_gradient_average, delimiter=",")
+
+#pandas datatable 
+df = pd.DataFrame(
+    {'x': x_grid.tolist(),
+     'area': area_prime_t.tolist(),
+     'density': density_prime_t.tolist(),
+     'velocity': velocity_prime_t.tolist(),
+     'temp': temperature_prime_t.tolist(),
+     'pressure':  pressure_prime_t.tolist(),
+     'mach': (velocity_prime_t/np.power(temperature_prime_t,0.5)).tolist()
+    })
+
+df.index = np.arange(1, len(df) + 1)
+
+#print(df)
