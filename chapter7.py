@@ -52,11 +52,15 @@ density = np.empty(TIME_STEPS)
 temperature = np.empty(TIME_STEPS)
 pressure = np.empty(TIME_STEPS)
 mach_nos = np.empty(TIME_STEPS)
+density_gradient_average = np.empty(TIME_STEPS)
+velocity_gradient_average = np.empty(TIME_STEPS)
 
 density[:] = np.nan
 temperature[:] = np.nan
 pressure[:] = np.nan
 mach_nos[:] = np.nan
+density_gradient_average[:] = np.nan
+velocity_gradient_average[:] = np.nan
 
 results = [density, temperature, pressure, mach_nos]
 
@@ -252,12 +256,15 @@ for jj in range(TIME_STEPS):
   temperature[jj] = temperature_prime_t[15]
   pressure[jj] = pressure_prime_t[15]
   mach_nos[jj] = velocity_prime_t[15]/np.power(temperature_prime_t[15],0.5)
+  density_gradient_average[jj] = abs(density_gradient_avg[15])
+  velocity_gradient_average[jj] = abs(velocity_gradient_avg[15])
 
 #print(velocity_prime_t.shape)
 #print(X.shape)
 #print(area_prime_t[15])
 
 #plotting 
+#figure 1
 fig, axs = plt.subplots(4)
 fig.suptitle('Fig 7.9')
 plt.subplots_adjust(left=0.1,
@@ -287,4 +294,15 @@ for kk in range(4):
 
   axs[kk].yaxis.set_label_coords(0.9, 0.6)
 
+
+#figure 2
+g = plt.figure(2)
+plt.scatter(X, density_gradient_average, s=1, color='black')
+#plt.scatter(X, velocity_gradient_average, s=1, color='red')
+plt.xlabel("Number of Time Steps")
+plt.ylabel("Residuals")
+plt.yscale('log')
+
 plt.show()
+
+#np.savetxt(r'test1.txt', density_gradient_average, delimiter=",")
