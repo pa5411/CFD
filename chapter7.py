@@ -23,6 +23,7 @@ D = 1 - 0.3146*x_grid #density
 T = 1 - 0.2314*x_grid #temperature
 U = (0.1 + 1.09*x_grid)*np.power(T,0.5) #velocity
 A = 1 + 2.2*np.power((x_grid-1.5),2) #nozzle shape
+A_log = np.log(A)
 
 #create arrays
 p = np.empty(N, dtype=FLOAT_PRECISION) #pressure
@@ -70,7 +71,7 @@ for jj in range(TIME_STEPS):
 
     dD_dt_bar[ii] = \
       -D[ii] * ((U[ii+1] - U[ii])/DX) \
-      -D[ii] * U[ii] * ((np.log(A[ii+1]) - np.log(A[ii]))/DX) \
+      -D[ii] * U[ii] * ((A_log[ii+1] - A_log[ii])/DX) \
       -U[ii] * ((D[ii+1] - D[ii])/DX)
 
     dU_dt_bar[ii] = \
@@ -85,7 +86,7 @@ for jj in range(TIME_STEPS):
       -(GAMMA-1)*T[ii] \
       *( \
         ((U[ii+1] - U[ii])/DX) \
-        +U[ii] * ((np.log(A[ii+1]) - np.log(A[ii]))/DX) \
+        +U[ii] * ((A_log[ii+1] - A_log[ii])/DX) \
         )
   
   #calculate minimum time step
@@ -108,7 +109,7 @@ for jj in range(TIME_STEPS):
   for ii in range(1,N-1):
     dD_dt_corr[ii] = \
       -D_bar[ii] * (U_bar[ii] - U_bar[ii-1]) * (1/DX) \
-      -D_bar[ii] * U_bar[ii] * (np.log(A[ii]) - np.log(A[ii-1])) * (1/DX) \
+      -D_bar[ii] * U_bar[ii] * (A_log[ii] - A_log[ii-1]) * (1/DX) \
       -U_bar[ii] * (D_bar[ii] - D_bar[ii-1]) * (1/DX)
 
     dU_dt_corr[ii] = \
@@ -121,7 +122,7 @@ for jj in range(TIME_STEPS):
       -U_bar[ii] * (T_bar[ii] - T_bar[ii-1]) * (1/DX) \
       -(GAMMA-1) * T_bar[ii] * (U_bar[ii] - U_bar[ii-1]) * (1/DX) \
       -(GAMMA-1) * T_bar[ii] * U_bar[ii] *(1/DX) \
-        *(np.log(A[ii]) - np.log(A[ii-1])) 
+        *(A_log[ii] - A_log[ii-1]) 
 
   #calculate average time derivatives
   dD_dt_avg = (dD_dt_bar + dD_dt_corr)*0.5
@@ -134,7 +135,7 @@ for jj in range(TIME_STEPS):
   T = T + dT_dt_avg*delta_t
   p = D*T
 
-  #set fixed boundary conditions - needed to avoid nans in update above
+  #set boundary conditions - needed to avoid nans in update above
   D[0] = 1
   T[0] = 1
 
