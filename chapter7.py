@@ -49,7 +49,7 @@ D_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
 U_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
 T_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
 p_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
-M_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
+M_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION) 
 dD_dt_avg_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
 dU_dt_avg_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
 
@@ -144,7 +144,7 @@ for jj in range(TIME_STEPS):
   T[N-1] = 2*T[N-2] - T[N-3] #floating outflow B.C
   p[N-1] = D[N-1]*T[N-1]
 
-  #store results
+  #store results at one location per time step
   D_loc[jj] = D[LOC]
   U_loc[jj] = U[LOC]
   T_loc[jj] = T[LOC]
@@ -204,7 +204,8 @@ df = pd.DataFrame(
      'velocity': U.tolist(),
      'temp': T.tolist(),
      'pressure':  p.tolist(),
-     'mach': (U/np.power(T,0.5)).tolist()
+     'mach': (U/np.power(T,0.5)).tolist(),
+     'mdot': (D*A*U).tolist()
     })
 
 df.index = np.arange(1, len(df) + 1)
