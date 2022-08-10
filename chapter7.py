@@ -94,11 +94,11 @@ for jj in range(TIME_STEPS):
   delta_t = np.min(COURANT_NUMBER*DX/(a + U))
   
   #predictor - calculate barred quantities at internal points
-  for ii in range(1,N-1):
+  #for ii in range(1,N-1):
 
-    D_bar = D + dD_dt_bar*delta_t
-    U_bar = U + dU_dt_bar*delta_t
-    T_bar = T + dT_dt_bar*delta_t
+  D_bar = D + dD_dt_bar*delta_t
+  U_bar = U + dU_dt_bar*delta_t
+  T_bar = T + dT_dt_bar*delta_t
 
   #assign values to external points of predicted variables
   D_bar[0] = 1
