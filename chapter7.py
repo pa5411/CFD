@@ -66,7 +66,7 @@ results = [D_loc, T_loc, p_loc, M_loc]
 #begin maccormack scheme
 for jj in range(TIME_STEPS):
 
-  #predictor step - calculate predicted gradients at internal points 
+  #predictor step - calculate predicted gradients at internal points
   for ii in range(1,N-1):
 
     dD_dt_bar[ii] = \
@@ -88,20 +88,21 @@ for jj in range(TIME_STEPS):
         ((U[ii+1] - U[ii])/DX) \
         +U[ii] * ((A_log[ii+1] - A_log[ii])/DX) \
         )
-  
+
   #calculate minimum time step
   a = np.power(T,0.5) #speed of sound
-  delta_t = np.min(COURANT_NUMBER*DX/(a + U))
-  
+  delta_t = np.nanmin(COURANT_NUMBER*DX/(a + U))
+
   #predictor - calculate barred quantities at internal points
   D_bar = D + dD_dt_bar*delta_t
   U_bar = U + dU_dt_bar*delta_t
   T_bar = T + dT_dt_bar*delta_t
 
-  #assign values to external points of predicted variables
-  D_bar[0] = 1
+  #assign values to external points of predicted variables at inflow 
+  #for backwards difference scheme 
+  D_bar[0] = D[0]
   U_bar[0] = U[0]
-  T_bar[0] = 1
+  T_bar[0] = T[0]
 
   #corrector - calculate corrected gradients
   for ii in range(1,N-1):
@@ -133,19 +134,15 @@ for jj in range(TIME_STEPS):
   T = T + dT_dt_avg*delta_t
   p = D*T
 
-  #set boundary conditions - needed to avoid nans in update above
+  #set boundary conditions
   D[0] = 1
   T[0] = 1
-
-  #calculate floating inflow boundary conditions 
-  U[0] = 2*U[1] - U[2]
-  
-  #print(U[0])
-
-  #calculate floating outflow boundary conditions 
-  D[N-1] = 2*D[N-2] - D[N-3]
-  U[N-1] = 2*U[N-2] - U[N-3]
-  T[N-1] = 2*T[N-2] - T[N-3]
+  p[0] = D[0]*T[0] 
+  U[0] = 2*U[1] - U[2] #floating inflow B.C
+  D[N-1] = 2*D[N-2] - D[N-3] #floating outflow B.C
+  U[N-1] = 2*U[N-2] - U[N-3] #floating outflow B.C
+  T[N-1] = 2*T[N-2] - T[N-3] #floating outflow B.C
+  p[N-1] = D[N-1]*T[N-1]
 
   #store results
   D_loc[jj] = D[LOC]
@@ -196,7 +193,7 @@ plt.xlabel("Number of Time Steps")
 plt.ylabel("Residuals")
 plt.yscale('log')
 
-#plt.show()
+plt.show()
 #np.savetxt(r'test1.txt', dD_dt_avg_loc, delimiter=",")
 
 #pandas datatable 
@@ -211,5 +208,4 @@ df = pd.DataFrame(
     })
 
 df.index = np.arange(1, len(df) + 1)
-
 print(df)
