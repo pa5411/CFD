@@ -15,5 +15,5 @@ libraries.
 
 ## Assignments 
 
-[*] C7SEC3 - 1D Subsonic-Supersonic Isentropic Nozzle Flow 
-[**] MacCormack's Technique
+* C7SEC3 - 1D Subsonic-Supersonic Isentropic Nozzle Flow 
+    * MacCormack's Technique
