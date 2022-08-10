@@ -3,287 +3,159 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 #User fixed settings 
-NOZZLE_LENGTH_PRIME = 3 #centimeters
+NOZZLE_LENGTH = 3 #centimeters
 GAMMA = 1.4
 TIME_STEPS = 1400
 COURANT_NUMBER = 0.5
-GRID_SPACING = 0.1
+DX = 0.1
 INT_PRECISION = np.int16
 FLOAT_PRECISION = np.float32
 EMPTY_TYPE = np.nan
+LOC = 15 #grid location to plot results
 
-#generate 1D grid
-nos_grid_pts = int(NOZZLE_LENGTH_PRIME/GRID_SPACING + 1)
-x_grid = np.linspace(0,NOZZLE_LENGTH_PRIME,nos_grid_pts, dtype=FLOAT_PRECISION)
+#generate 1D grid + number of steps
+N = int(NOZZLE_LENGTH/DX + 1)
+x_grid = np.linspace(0, NOZZLE_LENGTH, N, dtype=FLOAT_PRECISION)
+step_nos = np.linspace(0, TIME_STEPS-1, TIME_STEPS, dtype=INT_PRECISION)
 
-#generate number of steps array
-X = np.linspace(0,TIME_STEPS-1,TIME_STEPS,dtype=INT_PRECISION)
+#initial conditions
+D = 1 - 0.3146*x_grid #density
+T = 1 - 0.2314*x_grid #temperature
+U = (0.1 + 1.09*x_grid)*np.power(T,0.5) #velocity
+A = 1 + 2.2*np.power((x_grid-1.5),2) #nozzle shape
 
-#generate initial conditions and arrays
-density_prime_t = 1 - 0.3146*x_grid
-temperature_prime_t = 1 - 0.2314*x_grid
-velocity_prime_t = (0.1 + 1.09*x_grid) \
-                     *np.power(temperature_prime_t,0.5) 
-area_prime_t = 1 + 2.2*np.power((x_grid-1.5),2) #nozzle shape
+#create arrays
+p = np.empty(N, dtype=FLOAT_PRECISION) #pressure
 
-#print(velocity_prime_t.dtype)
+dD_dt_bar = np.empty(N, dtype=FLOAT_PRECISION)
+dU_dt_bar = np.empty(N, dtype=FLOAT_PRECISION)
+dT_dt_bar = np.empty(N, dtype=FLOAT_PRECISION)
 
-speed_of_sound = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
-pressure_prime_t = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
+dD_dt_corr = np.empty(N, dtype=FLOAT_PRECISION)
+dU_dt_corr = np.empty(N, dtype=FLOAT_PRECISION)
+dT_dt_corr = np.empty(N, dtype=FLOAT_PRECISION)
 
-density_gradient_prime_t = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
-velocity_gradient_prime_t = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
-temperature_gradient_prime_t = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
-
-density_corrected_gradient_prime_t_delta = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
-velocity_corrected_gradient_prime_t_delta = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
-temperature_corrected_gradient_prime_t_delta = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
-
-#assign NaNs to all elements to facilitate detection of errors 
-speed_of_sound[:] = EMPTY_TYPE
-pressure_prime_t[:] = EMPTY_TYPE
-density_gradient_prime_t[:] = EMPTY_TYPE
-velocity_gradient_prime_t[:] = EMPTY_TYPE
-temperature_gradient_prime_t[:] = EMPTY_TYPE
-density_corrected_gradient_prime_t_delta[:] = EMPTY_TYPE
-velocity_corrected_gradient_prime_t_delta[:] = EMPTY_TYPE
-temperature_corrected_gradient_prime_t_delta[:] = EMPTY_TYPE
-
-#print(density_corrected_gradient_prime_t_delta)
+p[:] = EMPTY_TYPE
+dD_dt_bar[:] = EMPTY_TYPE
+dU_dt_bar[:] = EMPTY_TYPE
+dT_dt_bar[:] = EMPTY_TYPE
+dD_dt_corr[:] = EMPTY_TYPE
+dU_dt_corr[:] = EMPTY_TYPE
+dT_dt_corr[:] = EMPTY_TYPE
 
 #create arrays to store normalised results
-density = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
-velocity = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
-temperature = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
-pressure = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
-mach_nos = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
-density_gradient_average = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
-velocity_gradient_average = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
+D_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
+U_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
+T_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
+p_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
+M_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
+dD_dt_avg_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
+dU_dt_avg_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
 
-density[:] = EMPTY_TYPE
-velocity[:] = EMPTY_TYPE
-temperature[:] = EMPTY_TYPE
-pressure[:] = EMPTY_TYPE
-mach_nos[:] = EMPTY_TYPE
-density_gradient_average[:] = EMPTY_TYPE
-velocity_gradient_average[:] = EMPTY_TYPE
+D_loc[:] = EMPTY_TYPE
+U_loc[:] = EMPTY_TYPE
+T_loc[:] = EMPTY_TYPE
+p_loc[:] = EMPTY_TYPE
+M_loc[:] = EMPTY_TYPE
+dD_dt_avg_loc[:] = EMPTY_TYPE
+dU_dt_avg_loc[:] = EMPTY_TYPE
 
-results = [density, temperature, pressure, mach_nos]
+results = [D_loc, T_loc, p_loc, M_loc]
 
 #begin maccormack scheme
 for jj in range(TIME_STEPS):
 
-  #predictor step - calculate gradients at internal points 
-  for ii in range(1,nos_grid_pts-1):
+  #predictor step - calculate predicted gradients at internal points 
+  for ii in range(1,N-1):
 
-    density_gradient_prime_t[ii] = \
-      -density_prime_t[ii] \
-      *((velocity_prime_t[ii+1] - velocity_prime_t[ii])/GRID_SPACING) \
-      -density_prime_t[ii]*velocity_prime_t[ii] \
-      *((np.log(area_prime_t[ii+1]) - np.log(area_prime_t[ii]))/GRID_SPACING) \
-      -velocity_prime_t[ii] \
-      *((density_prime_t[ii+1] - density_prime_t[ii])/GRID_SPACING)
+    dD_dt_bar[ii] = \
+      -D[ii] * ((U[ii+1] - U[ii])/DX) \
+      -D[ii] * U[ii] * ((np.log(A[ii+1]) - np.log(A[ii]))/DX) \
+      -U[ii] * ((D[ii+1] - D[ii])/DX)
 
-    velocity_gradient_prime_t[ii] = \
-      -velocity_prime_t[ii] \
-      *((velocity_prime_t[ii+1] - velocity_prime_t[ii])/GRID_SPACING) \
+    dU_dt_bar[ii] = \
+      -U[ii] * ((U[ii+1] - U[ii])/DX) \
       -(1/GAMMA) \
-      *( \
-        ((temperature_prime_t[ii+1] - temperature_prime_t[ii])/GRID_SPACING) \
-        +(temperature_prime_t[ii]/density_prime_t[ii]) \
-        *((density_prime_t[ii+1] - density_prime_t[ii])/GRID_SPACING) \
+      *( ((T[ii+1] - T[ii])/DX) \
+        +(T[ii]/D[ii]) * ((D[ii+1] - D[ii])/DX) \
         )
 
-    temperature_gradient_prime_t[ii] = \
-      -velocity_prime_t[ii] \
-      *((temperature_prime_t[ii+1] - temperature_prime_t[ii])/GRID_SPACING) \
-      -(GAMMA-1)*temperature_prime_t[ii] \
+    dT_dt_bar[ii] = \
+      -U[ii] * ((T[ii+1] - T[ii])/DX) \
+      -(GAMMA-1)*T[ii] \
       *( \
-        ((velocity_prime_t[ii+1] - velocity_prime_t[ii])/GRID_SPACING) \
-        +velocity_prime_t[ii] \
-        *((np.log(area_prime_t[ii+1]) - np.log(area_prime_t[ii]))/GRID_SPACING) \
+        ((U[ii+1] - U[ii])/DX) \
+        +U[ii] * ((np.log(A[ii+1]) - np.log(A[ii]))/DX) \
         )
   
-  #print(temperature_gradient_prime_t)
-  
-  #time step
-  speed_of_sound_prime = np.power(temperature_prime_t,0.5)
-  time_steps_prime = \
-    COURANT_NUMBER*GRID_SPACING/(speed_of_sound_prime + velocity_prime_t)
-  min_time_step_prime = np.min(time_steps_prime)
-
-  #print(time_steps_prime)
-  #print(min_time_step_prime)
+  #calculate minimum time step
+  a = np.power(T,0.5) #speed of sound
+  delta_t = np.min(COURANT_NUMBER*DX/(a + U))
   
   #predictor - calculate barred quantities at internal points
-  for ii in range(1,nos_grid_pts-1):
+  for ii in range(1,N-1):
 
-    density_predicted_prime_t_delta = \
-      density_prime_t \
-      +density_gradient_prime_t \
-      *min_time_step_prime
-
-    velocity_predicted_prime_t_delta = \
-      velocity_prime_t \
-      +velocity_gradient_prime_t \
-      *min_time_step_prime
-
-    temperature_predicted_prime_t_delta = \
-      temperature_prime_t \
-      +temperature_gradient_prime_t \
-      *min_time_step_prime
-  
-  #print(temperature_predicted_prime_t_delta)
+    D_bar = D + dD_dt_bar*delta_t
+    U_bar = U + dU_dt_bar*delta_t
+    T_bar = T + dT_dt_bar*delta_t
 
   #assign values to external points of predicted variables
-  density_predicted_prime_t_delta[0] = 1
-  velocity_predicted_prime_t_delta[0] = velocity_prime_t[0]
-  temperature_predicted_prime_t_delta[0] = 1
-  
-  density_predicted_prime_t_delta[nos_grid_pts-1] = \
-    density_prime_t[nos_grid_pts-1]
-  velocity_predicted_prime_t_delta[nos_grid_pts-1] = \
-    velocity_prime_t[nos_grid_pts-1]
-  temperature_predicted_prime_t_delta[nos_grid_pts-1] = \
-    temperature_prime_t[nos_grid_pts-1]
-  
-  #print(velocity_predicted_prime_t_delta)
+  D_bar[0] = 1
+  U_bar[0] = U[0]
+  T_bar[0] = 1
 
   #corrector - calculate corrected gradients
-  for ii in range(1,nos_grid_pts-1):
-    density_corrected_gradient_prime_t_delta[ii] = \
-      -density_predicted_prime_t_delta[ii] \
-      *( \
-        velocity_predicted_prime_t_delta[ii] \
-        -velocity_predicted_prime_t_delta[ii-1] \
-      ) \
-      *(1/GRID_SPACING) \
-      -density_predicted_prime_t_delta[ii] \
-      *velocity_predicted_prime_t_delta[ii] \
-      *( \
-        np.log(area_prime_t[ii]) \
-        -np.log(area_prime_t[ii-1]) \
-      ) \
-      *(1/GRID_SPACING) \
-      -velocity_predicted_prime_t_delta[ii] \
-      *( \
-        density_predicted_prime_t_delta[ii] \
-        -density_predicted_prime_t_delta[ii-1] \
-      ) \
-      *(1/GRID_SPACING)
+  for ii in range(1,N-1):
+    dD_dt_corr[ii] = \
+      -D_bar[ii] * (U_bar[ii] - U_bar[ii-1]) * (1/DX) \
+      -D_bar[ii] * U_bar[ii] * (np.log(A[ii]) - np.log(A[ii-1])) * (1/DX) \
+      -U_bar[ii] * (D_bar[ii] - D_bar[ii-1]) * (1/DX)
 
-    #print(density_corrected_gradient_prime_t_delta[ii])
+    dU_dt_corr[ii] = \
+      -U_bar[ii] * (U_bar[ii] - U_bar[ii-1]) * (1/DX) \
+      -(1/GAMMA) * (T_bar[ii] - T_bar[ii-1]) * (1/DX) \
+      -(1/GAMMA) * (T_bar[ii]/D_bar[ii]) \
+        *(D_bar[ii] - D_bar[ii-1]) * (1/DX)
 
-    velocity_corrected_gradient_prime_t_delta[ii] = \
-      -velocity_predicted_prime_t_delta[ii] \
-      *( \
-        velocity_predicted_prime_t_delta[ii] \
-        -velocity_predicted_prime_t_delta[ii-1] \
-        ) \
-      *(1/GRID_SPACING) \
-      -(1/GAMMA) \
-      *( \
-        temperature_predicted_prime_t_delta[ii] \
-        -temperature_predicted_prime_t_delta[ii-1] \
-        ) \
-      *(1/GRID_SPACING) \
-      -(1/GAMMA) \
-      *( \
-        temperature_predicted_prime_t_delta[ii] \
-        /density_predicted_prime_t_delta[ii]
-        ) \
-      *( \
-        density_predicted_prime_t_delta[ii] \
-        -density_predicted_prime_t_delta[ii-1] \
-        ) \
-      *(1/GRID_SPACING)
-
-    temperature_corrected_gradient_prime_t_delta[ii] = \
-      -velocity_predicted_prime_t_delta[ii] \
-      *( \
-        temperature_predicted_prime_t_delta[ii] \
-        -temperature_predicted_prime_t_delta[ii-1] \
-        ) \
-      *(1/GRID_SPACING) \
-      -(GAMMA - 1)*temperature_predicted_prime_t_delta[ii] \
-      *( \
-        velocity_predicted_prime_t_delta[ii] \
-        -velocity_predicted_prime_t_delta[ii-1] \
-        ) \
-      *(1/GRID_SPACING)\
-      -(GAMMA - 1)*temperature_predicted_prime_t_delta[ii] \
-      *velocity_predicted_prime_t_delta[ii] \
-      *(np.log(area_prime_t[ii]) - np.log(area_prime_t[ii-1])) \
-      *(1/GRID_SPACING)
-
-  #print(jj+1,abs(velocity_corrected_gradient_prime_t_delta[15]))
+    dT_dt_corr[ii] = \
+      -U_bar[ii] * (T_bar[ii] - T_bar[ii-1]) * (1/DX) \
+      -(GAMMA-1) * T_bar[ii] * (U_bar[ii] - U_bar[ii-1]) * (1/DX) \
+      -(GAMMA-1) * T_bar[ii] * U_bar[ii] *(1/DX) \
+        *(np.log(A[ii]) - np.log(A[ii-1])) 
 
   #calculate average time derivatives
-  density_gradient_avg = \
-    (density_gradient_prime_t + density_corrected_gradient_prime_t_delta) \
-    *0.5
-  #print(abs(density_gradient_prime_t[15]))
-
-  velocity_gradient_avg = \
-    (velocity_gradient_prime_t + velocity_corrected_gradient_prime_t_delta) \
-    *0.5
-  
-  temperature_gradient_avg = \
-    (temperature_gradient_prime_t + temperature_corrected_gradient_prime_t_delta) \
-    *0.5
-
-  #print(temperature_gradient_prime_t)
-  #print(temperature_corrected_gradient_prime_t_delta)
-  #print(temperature_gradient_avg)
+  dD_dt_avg = (dD_dt_bar + dD_dt_corr)*0.5
+  dU_dt_avg = (dU_dt_bar + dU_dt_corr)*0.5
+  dT_dt_avg = (dT_dt_bar + dT_dt_corr)*0.5
 
   #update variables 
-  density_prime_t = density_prime_t + density_gradient_avg*min_time_step_prime
-  velocity_prime_t = velocity_prime_t + velocity_gradient_avg*min_time_step_prime
-  temperature_prime_t = \
-    temperature_prime_t + temperature_gradient_avg*min_time_step_prime
-  pressure_prime_t = density_prime_t * temperature_prime_t
-
-  #print(density_prime_t[0])
-  #print(temperature_prime_t[0])
-  #print(pressure_prime_t[0])
-  #print('next')
+  D = D + dD_dt_avg*delta_t
+  U = U + dU_dt_avg*delta_t
+  T = T + dT_dt_avg*delta_t
+  p = D*T
 
   #set fixed boundary conditions - needed to avoid nans in update above
-  density_prime_t[0] = 1
-  temperature_prime_t[0] = 1
+  D[0] = 1
+  T[0] = 1
 
   #calculate floating inflow boundary conditions 
-  velocity_prime_t[0] = 2*velocity_prime_t[1] - velocity_prime_t[2]
+  U[0] = 2*U[1] - U[2]
   
-  #print(velocity_prime_t[0])
+  #print(U[0])
 
   #calculate floating outflow boundary conditions 
-  density_prime_t[nos_grid_pts-1] = \
-    2*density_prime_t[nos_grid_pts-2] \
-    - density_prime_t[nos_grid_pts-3]
-
-  velocity_prime_t[nos_grid_pts-1] = \
-    2*velocity_prime_t[nos_grid_pts-2] \
-    - velocity_prime_t[nos_grid_pts-3]
-
-  temperature_prime_t[nos_grid_pts-1] = \
-    2*temperature_prime_t[nos_grid_pts-2] \
-    -temperature_prime_t[nos_grid_pts-3]
-  
-  #print(jj)
+  D[N-1] = 2*D[N-2] - D[N-3]
+  U[N-1] = 2*U[N-2] - U[N-3]
+  T[N-1] = 2*T[N-2] - T[N-3]
 
   #store results
-  density[jj] = density_prime_t[15]
-  velocity[jj] = velocity_prime_t[15]
-  temperature[jj] = temperature_prime_t[15]
-  pressure[jj] = pressure_prime_t[15]
-  mach_nos[jj] = velocity_prime_t[15]/np.power(temperature_prime_t[15],0.5)
-  density_gradient_average[jj] = np.absolute(density_gradient_avg[15])
-  velocity_gradient_average[jj] = np.absolute(velocity_gradient_avg[15])
-
-#print(velocity_prime_t.shape)
-#print(X.shape)
-#print(area_prime_t[15])
+  D_loc[jj] = D[LOC]
+  U_loc[jj] = U[LOC]
+  T_loc[jj] = T[LOC]
+  p_loc[jj] = p[LOC]
+  M_loc[jj] = U[LOC]/np.power(T[LOC],0.5)
+  dD_dt_avg_loc[jj] = np.absolute(dD_dt_avg[LOC])
+  dU_dt_avg_loc[jj] = np.absolute(dU_dt_avg[LOC])
 
 #plotting 
 #figure 1
@@ -297,7 +169,7 @@ plt.subplots_adjust(left=0.1,
                     hspace=0.4)
 
 for kk in range(4):
-  axs[kk].scatter(X, results[kk], s=1, color='black')
+  axs[kk].scatter(step_nos, results[kk], s=1, color='black')
   axs[kk].set_xlim(0, TIME_STEPS)
 
   if kk == 0:
@@ -316,31 +188,29 @@ for kk in range(4):
 
   axs[kk].yaxis.set_label_coords(0.9, 0.6)
 
-
 #figure 2
 g = plt.figure(2)
-#plt.scatter(X, density_gradient_average, s=1, color='black')
-plt.scatter(X, velocity_gradient_average, s=2, color='red')
-#plt.scatter(X, temperature_gradient_average, s=1, color='red')
+#plt.scatter(step_nos, dD_dt_avg_loc, s=1, color='black')
+plt.scatter(step_nos, dU_dt_avg_loc, s=2, color='red')
+#plt.scatter(step_nos, dT_dt_avg_loc, s=1, color='red')
 plt.xlabel("Number of Time Steps")
 plt.ylabel("Residuals")
 plt.yscale('log')
 
-plt.show()
-
-#np.savetxt(r'test1.txt', density_gradient_average, delimiter=",")
+#plt.show()
+#np.savetxt(r'test1.txt', dD_dt_avg_loc, delimiter=",")
 
 #pandas datatable 
 df = pd.DataFrame(
     {'x': x_grid.tolist(),
-     'area': area_prime_t.tolist(),
-     'density': density_prime_t.tolist(),
-     'velocity': velocity_prime_t.tolist(),
-     'temp': temperature_prime_t.tolist(),
-     'pressure':  pressure_prime_t.tolist(),
-     'mach': (velocity_prime_t/np.power(temperature_prime_t,0.5)).tolist()
+     'area': A.tolist(),
+     'density': D.tolist(),
+     'velocity': U.tolist(),
+     'temp': T.tolist(),
+     'pressure':  p.tolist(),
+     'mach': (U/np.power(T,0.5)).tolist()
     })
 
 df.index = np.arange(1, len(df) + 1)
 
-#print(df)
+print(df)
