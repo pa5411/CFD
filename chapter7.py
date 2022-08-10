@@ -9,12 +9,12 @@ TIME_STEPS = 1400
 COURANT_NUMBER = 0.5
 GRID_SPACING = 0.1
 INT_PRECISION = np.int16
-FLOAT_PRECISION = np.float16
+FLOAT_PRECISION = np.float32
 EMPTY_TYPE = np.nan
 
 #generate 1D grid
-number_of_grid_points = int(NOZZLE_LENGTH_PRIME/GRID_SPACING + 1)
-x_grid = np.linspace(0,NOZZLE_LENGTH_PRIME,number_of_grid_points, dtype=FLOAT_PRECISION)
+nos_grid_pts = int(NOZZLE_LENGTH_PRIME/GRID_SPACING + 1)
+x_grid = np.linspace(0,NOZZLE_LENGTH_PRIME,nos_grid_pts, dtype=FLOAT_PRECISION)
 
 #generate number of steps array
 X = np.linspace(0,TIME_STEPS-1,TIME_STEPS,dtype=INT_PRECISION)
@@ -28,16 +28,16 @@ area_prime_t = 1 + 2.2*np.power((x_grid-1.5),2) #nozzle shape
 
 #print(velocity_prime_t.dtype)
 
-speed_of_sound = np.empty(number_of_grid_points, dtype=FLOAT_PRECISION)
-pressure_prime_t = np.empty(number_of_grid_points, dtype=FLOAT_PRECISION)
+speed_of_sound = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
+pressure_prime_t = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
 
-density_gradient_prime_t = np.empty(number_of_grid_points, dtype=FLOAT_PRECISION)
-velocity_gradient_prime_t = np.empty(number_of_grid_points, dtype=FLOAT_PRECISION)
-temperature_gradient_prime_t = np.empty(number_of_grid_points, dtype=FLOAT_PRECISION)
+density_gradient_prime_t = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
+velocity_gradient_prime_t = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
+temperature_gradient_prime_t = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
 
-density_corrected_gradient_prime_t_delta = np.empty(number_of_grid_points, dtype=FLOAT_PRECISION)
-velocity_corrected_gradient_prime_t_delta = np.empty(number_of_grid_points, dtype=FLOAT_PRECISION)
-temperature_corrected_gradient_prime_t_delta = np.empty(number_of_grid_points, dtype=FLOAT_PRECISION)
+density_corrected_gradient_prime_t_delta = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
+velocity_corrected_gradient_prime_t_delta = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
+temperature_corrected_gradient_prime_t_delta = np.empty(nos_grid_pts, dtype=FLOAT_PRECISION)
 
 #assign NaNs to all elements to facilitate detection of errors 
 speed_of_sound[:] = EMPTY_TYPE
@@ -74,7 +74,7 @@ results = [density, temperature, pressure, mach_nos]
 for jj in range(TIME_STEPS):
 
   #predictor step - calculate gradients at internal points 
-  for ii in range(1,number_of_grid_points-1):
+  for ii in range(1,nos_grid_pts-1):
 
     density_gradient_prime_t[ii] = \
       -density_prime_t[ii] \
@@ -116,7 +116,7 @@ for jj in range(TIME_STEPS):
   #print(min_time_step_prime)
   
   #predictor - calculate barred quantities at internal points
-  for ii in range(1,number_of_grid_points-1):
+  for ii in range(1,nos_grid_pts-1):
 
     density_predicted_prime_t_delta = \
       density_prime_t \
@@ -140,17 +140,17 @@ for jj in range(TIME_STEPS):
   velocity_predicted_prime_t_delta[0] = velocity_prime_t[0]
   temperature_predicted_prime_t_delta[0] = 1
   
-  density_predicted_prime_t_delta[number_of_grid_points-1] = \
-    density_prime_t[number_of_grid_points-1]
-  velocity_predicted_prime_t_delta[number_of_grid_points-1] = \
-    velocity_prime_t[number_of_grid_points-1]
-  temperature_predicted_prime_t_delta[number_of_grid_points-1] = \
-    temperature_prime_t[number_of_grid_points-1]
+  density_predicted_prime_t_delta[nos_grid_pts-1] = \
+    density_prime_t[nos_grid_pts-1]
+  velocity_predicted_prime_t_delta[nos_grid_pts-1] = \
+    velocity_prime_t[nos_grid_pts-1]
+  temperature_predicted_prime_t_delta[nos_grid_pts-1] = \
+    temperature_prime_t[nos_grid_pts-1]
   
   #print(velocity_predicted_prime_t_delta)
 
   #corrector - calculate corrected gradients
-  for ii in range(1,number_of_grid_points-1):
+  for ii in range(1,nos_grid_pts-1):
     density_corrected_gradient_prime_t_delta[ii] = \
       -density_predicted_prime_t_delta[ii] \
       *( \
@@ -258,17 +258,17 @@ for jj in range(TIME_STEPS):
   #print(velocity_prime_t[0])
 
   #calculate floating outflow boundary conditions 
-  density_prime_t[number_of_grid_points-1] = \
-    2*density_prime_t[number_of_grid_points-2] \
-    - density_prime_t[number_of_grid_points-3]
+  density_prime_t[nos_grid_pts-1] = \
+    2*density_prime_t[nos_grid_pts-2] \
+    - density_prime_t[nos_grid_pts-3]
 
-  velocity_prime_t[number_of_grid_points-1] = \
-    2*velocity_prime_t[number_of_grid_points-2] \
-    - velocity_prime_t[number_of_grid_points-3]
+  velocity_prime_t[nos_grid_pts-1] = \
+    2*velocity_prime_t[nos_grid_pts-2] \
+    - velocity_prime_t[nos_grid_pts-3]
 
-  temperature_prime_t[number_of_grid_points-1] = \
-    2*temperature_prime_t[number_of_grid_points-2] \
-    -temperature_prime_t[number_of_grid_points-3]
+  temperature_prime_t[nos_grid_pts-1] = \
+    2*temperature_prime_t[nos_grid_pts-2] \
+    -temperature_prime_t[nos_grid_pts-3]
   
   #print(jj)
 
@@ -278,8 +278,8 @@ for jj in range(TIME_STEPS):
   temperature[jj] = temperature_prime_t[15]
   pressure[jj] = pressure_prime_t[15]
   mach_nos[jj] = velocity_prime_t[15]/np.power(temperature_prime_t[15],0.5)
-  density_gradient_average[jj] = abs(density_gradient_avg[15])
-  velocity_gradient_average[jj] = abs(velocity_gradient_avg[15])
+  density_gradient_average[jj] = np.absolute(density_gradient_avg[15])
+  velocity_gradient_average[jj] = np.absolute(velocity_gradient_avg[15])
 
 #print(velocity_prime_t.shape)
 #print(X.shape)
@@ -320,7 +320,7 @@ for kk in range(4):
 #figure 2
 g = plt.figure(2)
 #plt.scatter(X, density_gradient_average, s=1, color='black')
-plt.scatter(X, velocity_gradient_average, s=1, color='red')
+plt.scatter(X, velocity_gradient_average, s=2, color='red')
 #plt.scatter(X, temperature_gradient_average, s=1, color='red')
 plt.xlabel("Number of Time Steps")
 plt.ylabel("Residuals")
