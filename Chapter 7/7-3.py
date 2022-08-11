@@ -186,6 +186,7 @@ for kk in range(4):
 
 #figure 2
 g = plt.figure(2)
+g.suptitle('Fig 7.10')
 #plt.scatter(step_nos, dD_dt_avg_loc, s=1, color='black')
 plt.scatter(step_nos, dU_dt_avg_loc, s=2, color='red')
 #plt.scatter(step_nos, dT_dt_avg_loc, s=1, color='red')
@@ -209,4 +210,5 @@ df = pd.DataFrame(
     })
 
 df.index = np.arange(1, len(df) + 1)
+print('Table 7.3')
 print(df)
