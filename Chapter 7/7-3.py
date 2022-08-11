@@ -12,6 +12,7 @@ INT_PRECISION = np.int16
 FLOAT_PRECISION = np.float32
 EMPTY_TYPE = np.nan
 LOC = 15 #grid location to plot results
+TIME_PLOTS = [0, 50, 100, 150, 200, 700] #specify iterations to plot data
 
 #generate 1D grid + number of steps
 N = int(NOZZLE_LENGTH/DX + 1)
@@ -52,6 +53,15 @@ p_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
 M_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION) 
 dD_dt_avg_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
 dU_dt_avg_loc = np.empty(TIME_STEPS, dtype=FLOAT_PRECISION)
+mdot_time = [] #store mass flow rate at a given time step
+
+#run short code to obtain corrected index for time step numbers:
+time_plots_fixed = []
+for kk in TIME_PLOTS:
+  if kk == 0:
+    time_plots_fixed.append(0)
+  else:
+    time_plots_fixed.append(kk-1)
 
 D_loc[:] = EMPTY_TYPE
 U_loc[:] = EMPTY_TYPE
@@ -153,6 +163,9 @@ for jj in range(TIME_STEPS):
   dD_dt_avg_loc[jj] = np.absolute(dD_dt_avg[LOC])
   dU_dt_avg_loc[jj] = np.absolute(dU_dt_avg[LOC])
 
+  #record results along nozzle at a given time step
+  if jj in time_plots_fixed:
+      mdot_time.append(D*A*U)
 
 #pandas datatable 
 df = pd.DataFrame(
@@ -212,5 +225,16 @@ plt.xlabel("Number of Time Steps")
 plt.ylabel("Residuals")
 plt.yscale('log')
 
-plt.show()
 #np.savetxt(r'test1.txt', dD_dt_avg_loc, delimiter=",")
+
+#figure 7.11
+markers = ['ko','k>','ks','kx','k+','k*']
+g2 = plt.figure(3)
+g2.suptitle('Fig 7.11')
+for ii in range(6):
+  plt.plot(x_grid, mdot_time[ii], markers[ii])
+plt.xlabel("x/L")
+plt.ylabel("mdot")
+plt.legend(["Time Step = " + str(jj) for jj in TIME_PLOTS],loc="best")
+
+plt.show()
