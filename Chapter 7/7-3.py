@@ -153,8 +153,26 @@ for jj in range(TIME_STEPS):
   dD_dt_avg_loc[jj] = np.absolute(dD_dt_avg[LOC])
   dU_dt_avg_loc[jj] = np.absolute(dU_dt_avg[LOC])
 
+
+#pandas datatable 
+df = pd.DataFrame(
+    {'x': x_grid.tolist(),
+     'area': A.tolist(),
+     'density': D.tolist(),
+     'velocity': U.tolist(),
+     'temp': T.tolist(),
+     'pressure':  p.tolist(),
+     'mach': (U/np.power(T,0.5)).tolist(),
+     'mdot': (D*A*U).tolist()
+    })
+
+df.index = np.arange(1, len(df) + 1)
+print('Table 7.3')
+print(df)
+
+
 #plotting 
-#figure 1
+#figure 7.9
 fig, axs = plt.subplots(4)
 fig.suptitle('Fig 7.9')
 plt.subplots_adjust(left=0.1,
@@ -184,7 +202,7 @@ for kk in range(4):
 
   axs[kk].yaxis.set_label_coords(0.9, 0.6)
 
-#figure 2
+#figure 7.10
 g = plt.figure(2)
 g.suptitle('Fig 7.10')
 #plt.scatter(step_nos, dD_dt_avg_loc, s=1, color='black')
@@ -196,19 +214,3 @@ plt.yscale('log')
 
 plt.show()
 #np.savetxt(r'test1.txt', dD_dt_avg_loc, delimiter=",")
-
-#pandas datatable 
-df = pd.DataFrame(
-    {'x': x_grid.tolist(),
-     'area': A.tolist(),
-     'density': D.tolist(),
-     'velocity': U.tolist(),
-     'temp': T.tolist(),
-     'pressure':  p.tolist(),
-     'mach': (U/np.power(T,0.5)).tolist(),
-     'mdot': (D*A*U).tolist()
-    })
-
-df.index = np.arange(1, len(df) + 1)
-print('Table 7.3')
-print(df)
