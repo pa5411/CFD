@@ -73,6 +73,15 @@ dU_dt_avg_loc[:] = EMPTY_TYPE
 
 results = [D_loc, T_loc, p_loc, M_loc]
 
+#begin analytical result
+M_input = np.linspace(0.1, 3.5, 1000, dtype=FLOAT_PRECISION)
+
+_M_temp = (1 + 0.5*(GAMMA-1)*np.power(M_input,2))
+_M_exp = (GAMMA+1)/(GAMMA-1)
+_A_output_sq = (1/np.power(M_input,2))*np.power(_M_temp * (2/(GAMMA+1)),_M_exp)
+A_output = np.power(_A_output_sq,0.5)
+x_output = np.power(((A_output - 1)/2.2),0.5) + 1.5
+
 #begin maccormack scheme
 for jj in range(TIME_STEPS):
 
@@ -235,6 +244,15 @@ for ii in range(6):
   plt.plot(x_grid, mdot_time[ii], markers[ii])
 plt.xlabel("x/L")
 plt.ylabel("mdot")
-plt.legend(["Time Step = " + str(jj) for jj in TIME_PLOTS],loc="best")
+plt.legend(["Time Step = " + str(jj) for jj in TIME_PLOTS], loc="best")
 
-plt.show()
+#test fig
+g3 = plt.figure(4)
+g3.suptitle('test')
+plt.plot(x_output,M_input,)
+plt.xlabel("A")
+plt.ylabel("M")
+
+#plt.show()
+
+print(x_output)
