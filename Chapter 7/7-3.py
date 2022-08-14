@@ -155,6 +155,11 @@ for ii, M_A in enumerate(M_ana):
   else:
     x_ana[ii] = np.power(((_A_ana[ii] - 1)/2.2),0.5) + 1.5
 
+#calculate flow variables
+p_ana = _M_temp**(-GAMMA/(GAMMA-1))
+D_ana = _M_temp**(-1/(GAMMA-1))
+T_ana = _M_temp**-1
+
 # -----------------------------------------------------------
 # maccormack CFD scheme
 # -----------------------------------------------------------
