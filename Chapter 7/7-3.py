@@ -74,15 +74,27 @@ dU_dt_avg_loc[:] = EMPTY_TYPE
 results = [D_loc, T_loc, p_loc, M_loc]
 
 #begin analytical result
-M_input = np.linspace(0.1, 3.5, 1000, dtype=FLOAT_PRECISION)
+M_input_start = 0.1 #Mach nos. at x=0
+M_input_end = 3.35 #Mach nos. at x=3
+M_input_N = int((M_input_end-M_input_start)/0.01) + 1
+M_input = np.linspace(M_input_start, M_input_end, M_input_N, dtype=FLOAT_PRECISION)
 
-_M_temp = (1 + 0.5*(GAMMA-1)*np.power(M_input,2))
+_M_temp = 1 + 0.5*(GAMMA-1)*M_input**2
 _M_exp = (GAMMA+1)/(GAMMA-1)
-_A_output_sq = (1/np.power(M_input,2))*np.power(_M_temp * (2/(GAMMA+1)),_M_exp)
-A_output = np.power(_A_output_sq,0.5)
-x_output = np.power(((A_output - 1)/2.2),0.5) + 1.5
+_A_output_sq = (1/M_input**2) * ((2/(GAMMA+1)) * _M_temp)**_M_exp
+_A_output = _A_output_sq**0.5
 
-#begin maccormack scheme
+x_output = np.empty(M_input_N, dtype=FLOAT_PRECISION)
+x_output[:] = EMPTY_TYPE
+for ii, M_A in enumerate(M_input):
+  if M_A <= 1:
+    x_output[ii] = -(np.power(((_A_output[ii] - 1)/2.2),0.5)) + 1.5
+  else:
+    x_output[ii] = np.power(((_A_output[ii] - 1)/2.2),0.5) + 1.5
+    #print(M_input[ii],_A_output[ii],np.power(((_A_output[ii] - 1)/2.2),0.5))
+#print(x_output)
+
+#begin maccormack CFD scheme
 for jj in range(TIME_STEPS):
 
   #predictor step - calculate predicted gradients at internal points
@@ -192,18 +204,31 @@ df.index = np.arange(1, len(df) + 1)
 print('Table 7.3')
 print(df)
 
-
 #plotting 
-#figure 7.9
-fig, axs = plt.subplots(4)
-fig.suptitle('Fig 7.9')
-plt.subplots_adjust(left=0.1,
+
+#figure 7.2
+fig_ana, axs_ana = plt.subplots(4)
+fig_ana.suptitle('Fig 7.2')
+fig_ana.subplots_adjust(left=0.1,
                     bottom=0.1, 
                     right=0.9, 
                     top=0.9, 
                     wspace=0.4, 
                     hspace=0.4)
 
+axs_ana[0].scatter(x_output, M_input, s=1, color='black')
+axs_ana[0].set_ylabel("M", rotation=0)
+axs_ana[3].set_xlabel("x")
+
+#figure 7.9
+fig, axs = plt.subplots(4)
+fig.suptitle('Fig 7.9')
+fig.subplots_adjust(left=0.1,
+                    bottom=0.1, 
+                    right=0.9, 
+                    top=0.9, 
+                    wspace=0.4, 
+                    hspace=0.4)
 for kk in range(4):
   axs[kk].scatter(step_nos, results[kk], s=1, color='black')
   axs[kk].set_xlim(0, TIME_STEPS)
@@ -225,8 +250,8 @@ for kk in range(4):
   axs[kk].yaxis.set_label_coords(0.9, 0.6)
 
 #figure 7.10
-g = plt.figure(2)
-g.suptitle('Fig 7.10')
+g1 = plt.figure(3)
+g1.suptitle('Fig 7.10')
 #plt.scatter(step_nos, dD_dt_avg_loc, s=1, color='black')
 plt.scatter(step_nos, dU_dt_avg_loc, s=2, color='red')
 #plt.scatter(step_nos, dT_dt_avg_loc, s=1, color='red')
@@ -238,7 +263,7 @@ plt.yscale('log')
 
 #figure 7.11
 markers = ['ko','k>','ks','kx','k+','k*']
-g2 = plt.figure(3)
+g2 = plt.figure(4)
 g2.suptitle('Fig 7.11')
 for ii in range(6):
   plt.plot(x_grid, mdot_time[ii], markers[ii])
@@ -246,13 +271,4 @@ plt.xlabel("x/L")
 plt.ylabel("mdot")
 plt.legend(["Time Step = " + str(jj) for jj in TIME_PLOTS], loc="best")
 
-#test fig
-g3 = plt.figure(4)
-g3.suptitle('test')
-plt.plot(x_output,M_input,)
-plt.xlabel("A")
-plt.ylabel("M")
-
-#plt.show()
-
-print(x_output)
+plt.show()
