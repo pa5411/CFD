@@ -294,8 +294,20 @@ fig_ana.subplots_adjust(left=0.1,
                     hspace=0.4)
 
 axs_ana[0].scatter(x_ana, M_ana, s=1, color='black')
+axs_ana[1].scatter(x_ana, p_ana, s=1, color='black')
+axs_ana[2].scatter(x_ana, D_ana, s=1, color='black')
+axs_ana[3].scatter(x_ana, T_ana, s=1, color='black')
+
 axs_ana[0].set_ylabel("M", rotation=0)
+axs_ana[1].set_ylabel(r"$\frac{p}{p_o}$", rotation=0)
+axs_ana[2].set_ylabel(r"$\frac{D}{D_o}$", rotation=0)
+axs_ana[3].set_ylabel(r"$\frac{T}{T_o}$", rotation=0)
+
 axs_ana[3].set_xlabel("x")
+axs_ana[0].yaxis.set_label_coords(0.9, 0.3)
+axs_ana[1].yaxis.set_label_coords(0.9, 0.6)
+axs_ana[2].yaxis.set_label_coords(0.9, 0.6)
+axs_ana[3].yaxis.set_label_coords(0.9, 0.6)
 
 #figure 7.9
 fig, axs = plt.subplots(4)
