@@ -132,7 +132,7 @@ M_ana = np.linspace(
   M_ana_start, 
   M_ana_end, 
   M_ana_N, 
-  dtype=FLOAT_PRECISION)
+  dtype=FLOAT_PRECISION) 
 
 #create x points with which analytical data is stored
 x_ana = np.empty(M_ana_N, dtype=FLOAT_PRECISION)
@@ -152,6 +152,8 @@ _A_ana = _A_ana_sq**0.5
 for ii, M_A in enumerate(M_ana):
   if M_A <= 1:
     x_ana[ii] = -(np.power(((_A_ana[ii] - 1)/2.2),0.5)) + 1.5
+    if M_A == 1:
+      throat_ana_index = ii
   else:
     x_ana[ii] = np.power(((_A_ana[ii] - 1)/2.2),0.5) + 1.5
 
@@ -358,8 +360,16 @@ for ii in range(6):
   plt.plot(x_grid, mdot_time[ii], markers[ii])
 plt.xlabel("x/L")
 plt.ylabel("mdot")
+plt.axhline(
+  D_ana[throat_ana_index]*T_ana[throat_ana_index]**0.5,
+  color='red',
+  dashes=(5, 2, 1, 2),
+  label="Extra label on the legend") 
+legend_items = \
+  ["Time Step = " + str(jj) for jj in TIME_PLOTS] \
+  + ['Analytical']
 plt.legend(
-  ["Time Step = " + str(jj) for jj in TIME_PLOTS], 
+  legend_items, 
   loc="best")
 
 plt.show()
