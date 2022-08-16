@@ -311,6 +311,11 @@ axs_ana[1].yaxis.set_label_coords(0.9, 0.6)
 axs_ana[2].yaxis.set_label_coords(0.9, 0.6)
 axs_ana[3].yaxis.set_label_coords(0.9, 0.6)
 
+axs_ana[0].axvline(1.5, color='r', linestyle='-.',clip_on=False)
+axs_ana[1].axvline(1.5, color='r', linestyle='-.',clip_on=False)
+axs_ana[2].axvline(1.5, color='r', linestyle='-.',clip_on=False)
+axs_ana[3].axvline(1.5, color='r', linestyle='-.',clip_on=False)
+
 #figure 7.9
 fig, axs = plt.subplots(4)
 fig.suptitle('Fig 7.9')
