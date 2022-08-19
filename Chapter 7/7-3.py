@@ -13,6 +13,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.transforms as transforms
 
 # -----------------------------------------------------------
 # user fixed settings
@@ -307,7 +308,27 @@ results_ana_labels = [
 for ii in range(4):
   axs_ana[ii].scatter(x_ana, results_ana[ii], s=1, color='k')
   axs_ana[ii].axvline(1.5, color='r', linestyle='-.')
-  axs_ana[ii].axhline(results_ana[ii][throat_index], color='r', linestyle='-.')
+  
+  throat_value = results_ana[ii][throat_index]
+  axs_ana[ii].axhline(
+    throat_value, 
+    color='r', 
+    linestyle='-.')
+
+  #https://stackoverflow.com/questions/42877747/
+  #plotting additional y point on y axis
+  trans = transforms.blended_transform_factory(
+    axs_ana[ii].get_yticklabels()[0].get_transform(), 
+    axs_ana[ii].transData)
+  
+  axs_ana[ii].text(
+    0,
+    float(throat_value), 
+    "{:.3f}".format(float(throat_value)), 
+    color="red", 
+    transform=trans, 
+    ha="right", 
+    va="center")
 
   #labels
   axs_ana[0].set_ylabel(results_ana_labels[ii], rotation=0)
