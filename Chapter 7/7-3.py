@@ -297,6 +297,7 @@ fig_ana.subplots_adjust(left=0.1,
                     wspace=0.4, 
                     hspace=0.4)
 
+throat_index = np.where(x_ana==1.5)
 results_ana_labels = [
   "M",
   r"$\frac{p}{p_o}$",
@@ -306,6 +307,9 @@ results_ana_labels = [
 for ii in range(4):
   axs_ana[ii].scatter(x_ana, results_ana[ii], s=1, color='k')
   axs_ana[ii].axvline(1.5, color='r', linestyle='-.')
+  axs_ana[ii].axhline(results_ana[ii][throat_index], color='r', linestyle='-.')
+
+  #labels
   axs_ana[0].set_ylabel(results_ana_labels[ii], rotation=0)
   if ii == 0:
     axs_ana[ii].yaxis.set_label_coords(0.9, 0.3)
