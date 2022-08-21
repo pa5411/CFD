@@ -411,4 +411,24 @@ axs_left.set_ylabel(r"$\frac{D}{D_o}$", rotation=0)
 axs_right.set_ylabel("M", rotation=0)
 plt.xlabel("x/L")
 
+#determine styling for the arrow drawn on figure
+arrow_style = dict(
+    arrowstyle = '<|-',
+    color = 'black',
+    linewidth = 1,
+    linestyle = '-',
+    mutation_scale = 20)
+
+axs_left.annotate(
+  '', 
+  xy = (1.5,0.6), 
+  xytext = (1.1,0.6),
+  arrowprops = arrow_style)
+
+axs_right.annotate(
+  '', 
+  xy = (2.37,2.4), 
+  xytext = (2.77,2.4),
+  arrowprops = arrow_style)   
+
 plt.show()
