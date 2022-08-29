@@ -431,4 +431,18 @@ axs_right.annotate(
   xytext = (2.77,2.4),
   arrowprops = arrow_style)   
 
+idx_results_ana = []
+for ii in np.arange(0.0,3.3,0.3):
+  idx_results_ana.append((np.abs(x_ana - ii)).argmin())
+
+axs_left.plot(
+  x_ana[idx_results_ana], 
+  D_ana[idx_results_ana], 
+  'ro')
+  
+axs_right.plot(
+  x_ana[idx_results_ana], 
+  M_ana[idx_results_ana], 
+  'ro')
+
 plt.show()
