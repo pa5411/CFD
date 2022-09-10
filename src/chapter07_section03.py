@@ -140,7 +140,7 @@ x_ana = np.empty(M_ana_N, dtype=FLOAT_PRECISION)
 x_ana[:] = EMPTY_TYPE
 
 # -----------------------------------------------------------
-# analtical calculation
+# analytical calculation
 # -----------------------------------------------------------
 
 #calculate normalised area
@@ -392,15 +392,21 @@ plt.yscale('log')
 markers = ['ko','k>','ks','kx','k+','k*']
 g2 = plt.figure(4)
 g2.suptitle('Fig 7.11')
+
 for ii in range(6):
   plt.plot(x_grid, mdot_time[ii], markers[ii])
+
 plt.xlabel("x/L")
 plt.ylabel("mdot")
+
+#plot analytical result as a horizontal line
 plt.axhline(
   D_ana[throat_ana_index]*T_ana[throat_ana_index]**0.5,
   color='red',
   dashes=(5, 2, 1, 2),
   label="Extra label on the legend") 
+
+#plot legend
 legend_items = \
   ["Time Step = " + str(jj) for jj in TIME_PLOTS] \
   + ['Analytical']
@@ -428,6 +434,7 @@ arrow_style = dict(
     linestyle = '-',
     mutation_scale = 20)
 
+#create arrow annotations
 axs_left.annotate(
   '', 
   xy = (1.5,0.6), 
@@ -440,6 +447,7 @@ axs_right.annotate(
   xytext = (2.77,2.4),
   arrowprops = arrow_style)   
 
+#identify indicies with values closest to a given 1dp number
 idx_results_ana = []
 for ii in np.arange(0.0,3.3,0.3):
   idx_results_ana.append((np.abs(x_ana - ii)).argmin())
@@ -454,9 +462,11 @@ axs_right.plot(
   M_ana[idx_results_ana], 
   'ro')
 
-axs_left.plot(x_grid, D, 'k-')
-axs_right.plot(x_grid,U/(T**0.5),'k-')
+#plot numerical result
+axs_left.plot(x_grid, D, 'k-') #density
+axs_right.plot(x_grid,U/(T**0.5),'k-') #mach number
 
+#plot legend
 legend_items = ['Exact analytical value', 'Numerical result']
 plt.legend(
   legend_items, 
