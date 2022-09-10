@@ -266,10 +266,8 @@ for jj in range(TIME_STEPS):
       mdot_time.append(D*A*U)
 
 # -----------------------------------------------------------
-# display results
+# Results - Table 7.3
 # -----------------------------------------------------------
-
-#tables
 
 df = pd.DataFrame(
     {'x': x_grid.tolist(),
@@ -286,9 +284,10 @@ df.index = np.arange(1, len(df) + 1)
 print('Table 7.3')
 print(df)
 
-#plotting 
+# -----------------------------------------------------------
+# Results - Figure 7.2
+# -----------------------------------------------------------
 
-#figure 7.2
 fig_ana, axs_ana = plt.subplots(4)
 fig_ana.suptitle('Fig 7.2')
 fig_ana.subplots_adjust(left=0.1,
@@ -339,7 +338,10 @@ for ii in range(4):
 
 axs_ana[3].set_xlabel("x")
 
-#figure 7.9
+# -----------------------------------------------------------
+# Results - Figure 7.9
+# -----------------------------------------------------------
+
 fig, axs = plt.subplots(4)
 fig.suptitle('Fig 7.9')
 fig.subplots_adjust(left=0.1,
@@ -368,7 +370,10 @@ for kk in range(4):
 
   axs[kk].yaxis.set_label_coords(0.9, 0.6)
 
-#figure 7.10
+# -----------------------------------------------------------
+# Results - Figure 7.10
+# -----------------------------------------------------------
+
 g1 = plt.figure(3)
 g1.suptitle('Fig 7.10')
 #plt.scatter(step_nos, dD_dt_avg_loc, s=1, color='black')
@@ -380,7 +385,10 @@ plt.yscale('log')
 
 #np.savetxt(r'test1.txt', dD_dt_avg_loc, delimiter=",")
 
-#figure 7.11
+# -----------------------------------------------------------
+# Results - Figure 7.11
+# -----------------------------------------------------------
+
 markers = ['ko','k>','ks','kx','k+','k*']
 g2 = plt.figure(4)
 g2.suptitle('Fig 7.11')
@@ -400,7 +408,10 @@ plt.legend(
   legend_items, 
   loc="best")
 
-#figure 7.12
+# -----------------------------------------------------------
+# Results - Figure 7.12
+# -----------------------------------------------------------
+
 g3, axs_left = plt.subplots()
 g3.suptitle('Fig 7.12')
 
