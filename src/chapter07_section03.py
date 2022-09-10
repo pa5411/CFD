@@ -399,7 +399,8 @@ for ii in range(6):
 plt.xlabel("x/L")
 plt.ylabel("mdot")
 
-#plot analytical result as a horizontal line
+#plot analytical result as a horizontal line - this uses a 
+#formula which is only valid at the nozzle throat
 plt.axhline(
   D_ana[throat_ana_index]*T_ana[throat_ana_index]**0.5,
   color='red',
