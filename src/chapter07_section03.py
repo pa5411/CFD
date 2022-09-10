@@ -14,6 +14,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.transforms as transforms
+import math
 
 # -----------------------------------------------------------
 # user fixed settings
@@ -23,11 +24,10 @@ NOZZLE_LENGTH = 3
 GAMMA = 1.4 #ratio of specific heats
 TIME_STEPS = 1400
 COURANT_NUMBER = 0.5
-DX = 0.05 #grid spacing
+DX = 0.1 #grid spacing
 INT_PRECISION = np.int16
 FLOAT_PRECISION = np.float32
 EMPTY_TYPE = np.nan
-LOC = 15 #grid location to plot results
 
 #specify iterations to plot data
 TIME_PLOTS = [0, 50, 100, 150, 200, 700] 
@@ -37,6 +37,8 @@ TIME_PLOTS = [0, 50, 100, 150, 200, 700]
 # -----------------------------------------------------------
 
 N = int(NOZZLE_LENGTH/DX + 1)
+LOC = int(math.ceil(N/2)) - 1
+print('Throat Location (index cell): ',LOC,'\n')
 
 x_grid = np.linspace(
   0, 
