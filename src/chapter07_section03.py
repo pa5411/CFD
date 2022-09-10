@@ -37,8 +37,8 @@ TIME_PLOTS = [0, 50, 100, 150, 200, 700]
 # -----------------------------------------------------------
 
 N = int(NOZZLE_LENGTH/DX + 1)
-LOC = int(math.ceil(N/2)) - 1
-print('Throat Location (index cell): ',LOC,'\n')
+throat_loc = int(math.ceil(N/2)) - 1
+print('Throat Location (index cell): ', throat_loc, '\n')
 
 x_grid = np.linspace(
   0, 
@@ -255,13 +255,13 @@ for jj in range(TIME_STEPS):
   p[N-1] = D[N-1]*T[N-1] #derived outflow pressure
 
   #store results at one location per time step
-  D_loc[jj] = D[LOC]
-  U_loc[jj] = U[LOC]
-  T_loc[jj] = T[LOC]
-  p_loc[jj] = p[LOC]
-  M_loc[jj] = U[LOC]/np.power(T[LOC],0.5)
-  dD_dt_avg_loc[jj] = np.absolute(dD_dt_avg[LOC])
-  dU_dt_avg_loc[jj] = np.absolute(dU_dt_avg[LOC])
+  D_loc[jj] = D[throat_loc]
+  U_loc[jj] = U[throat_loc]
+  T_loc[jj] = T[throat_loc]
+  p_loc[jj] = p[throat_loc]
+  M_loc[jj] = U[throat_loc]/np.power(T[throat_loc],0.5)
+  dD_dt_avg_loc[jj] = np.absolute(dD_dt_avg[throat_loc])
+  dU_dt_avg_loc[jj] = np.absolute(dU_dt_avg[throat_loc])
 
   #store results along nozzle at a given time step
   if jj in time_plots_index:
@@ -291,10 +291,10 @@ print(df)
 # -----------------------------------------------------------
 
 df_grid_dep = pd.DataFrame(
-    {'density': D[LOC],
-     'temp': T[LOC],
-     'pressure':  p[LOC],
-     'mach': (U[LOC]/np.power(T[LOC],0.5))
+    {'density': D[throat_loc],
+     'temp': T[throat_loc],
+     'pressure':  p[throat_loc],
+     'mach': (U[throat_loc]/np.power(T[throat_loc],0.5))
     },
     index=[0])
 
