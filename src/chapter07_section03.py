@@ -23,7 +23,7 @@ NOZZLE_LENGTH = 3
 GAMMA = 1.4 #ratio of specific heats
 TIME_STEPS = 1400
 COURANT_NUMBER = 0.5
-DX = 0.1 #grid spacing
+DX = 0.05 #grid spacing
 INT_PRECISION = np.int16
 FLOAT_PRECISION = np.float32
 EMPTY_TYPE = np.nan
@@ -283,6 +283,23 @@ df = pd.DataFrame(
 df.index = np.arange(1, len(df) + 1)
 print('Table 7.3')
 print(df)
+
+# -----------------------------------------------------------
+# Results - Table 7.5
+# -----------------------------------------------------------
+
+df_grid_dep = pd.DataFrame(
+    {'density': D[LOC],
+     'temp': T[LOC],
+     'pressure':  p[LOC],
+     'mach': (U[LOC]/np.power(T[LOC],0.5))
+    },
+    index=[0])
+
+print()
+print('Table 7.5')
+print(df_grid_dep)
+print()
 
 # -----------------------------------------------------------
 # Results - Figure 7.2
