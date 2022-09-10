@@ -416,8 +416,6 @@ g3, axs_left = plt.subplots()
 g3.suptitle('Fig 7.12')
 
 axs_right = axs_left.twinx()
-axs_left.plot(x_grid, D, 'k-')
-axs_right.plot(x_grid,U/(T**0.5),'k-')
 axs_left.set_ylabel(r"$\frac{D}{D_o}$", rotation=0)
 axs_right.set_ylabel("M", rotation=0)
 plt.xlabel("x/L")
@@ -455,5 +453,13 @@ axs_right.plot(
   x_ana[idx_results_ana], 
   M_ana[idx_results_ana], 
   'ro')
+
+axs_left.plot(x_grid, D, 'k-')
+axs_right.plot(x_grid,U/(T**0.5),'k-')
+
+legend_items = ['Exact analytical value', 'Numerical result']
+plt.legend(
+  legend_items, 
+  loc="best")
 
 plt.show()
