@@ -277,7 +277,10 @@ for jj in range(TIME_STEPS):
 x_index_ana_num_diff = []
 for ii in np.arange(0.0,3.0,0.1):
   x_index_ana_num_diff.append((np.abs(x_ana - ii)).argmin())
-  
+  if ii == 1.5:
+    #identify closest value of analytically calculated x to 
+    #throat (which is defined as 1.5)
+    throat_index = (np.abs(x_ana - ii)).argmin()
 
 # -----------------------------------------------------------
 # Results - Table 7.3
