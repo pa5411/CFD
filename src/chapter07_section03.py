@@ -280,7 +280,7 @@ for jj in range(TIME_STEPS):
 #estimate percentage differences
 
 x_index_ana_num_diff = []
-for ii in np.arange(0.0,3.0,0.1):
+for ii in np.arange(0.0,3.1,0.1):
   x_index_ana_num_diff.append((np.abs(x_ana - ii)).argmin())
   if ii == 1.5:
     #identify closest value of analytically calculated x to 
@@ -313,7 +313,7 @@ print(df)
 df_ana_num_diff = pd.DataFrame(
     {'x': x_grid.tolist(),
      'area': A.tolist(),
-     'density': D.tolist(),
+     'density (numerical)': D.tolist(),
      'mach': (U/np.power(T,0.5)).tolist(),
     })
 
@@ -528,4 +528,4 @@ plt.legend(
   legend_items, 
   loc="best")
 
-plt.show()
+#plt.show()
