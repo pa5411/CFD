@@ -267,6 +267,9 @@ for jj in range(TIME_STEPS):
   if jj in time_plots_index:
       mdot_time.append(D*A*U)
 
+
+
+
 # -----------------------------------------------------------
 # Results - Table 7.3
 # -----------------------------------------------------------
@@ -285,6 +288,23 @@ df = pd.DataFrame(
 df.index = np.arange(1, len(df) + 1)
 print('Table 7.3')
 print(df)
+
+# -----------------------------------------------------------
+# Results - Table 7.4
+# -----------------------------------------------------------
+
+df_ana_num_diff = pd.DataFrame(
+    {'x': x_grid.tolist(),
+     'area': A.tolist(),
+     'density': D.tolist(),
+     'mach': (U/np.power(T,0.5)).tolist(),
+    })
+
+df_ana_num_diff.index = np.arange(1, len(df) + 1)
+print()
+print('Table 7.4')
+print(df_ana_num_diff)
+print()
 
 # -----------------------------------------------------------
 # Results - Table 7.5
