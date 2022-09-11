@@ -285,7 +285,7 @@ for ii in np.arange(0.0,3.0,0.1):
   if ii == 1.5:
     #identify closest value of analytically calculated x to 
     #throat (which is defined as 1.5)
-    throat_index = (np.abs(x_ana - ii)).argmin()
+    throat_index_ana = (np.abs(x_ana - ii)).argmin()
 
 # -----------------------------------------------------------
 # Results - Table 7.3
@@ -363,7 +363,7 @@ for ii in range(4):
   axs_ana[ii].scatter(x_ana, results_ana[ii], s=1, color='k')
   axs_ana[ii].axvline(1.5, color='r', linestyle='-.')
   
-  throat_value = results_ana[ii][throat_index]
+  throat_value = results_ana[ii][throat_index_ana]
   axs_ana[ii].axhline(
     throat_value, 
     color='r', 
@@ -457,7 +457,7 @@ plt.ylabel("mdot")
 #plot analytical result as a horizontal line - this uses a 
 #formula which is only valid at the nozzle throat
 plt.axhline(
-  D_ana[throat_index]*T_ana[throat_index]**0.5,
+  D_ana[throat_index_ana]*T_ana[throat_index_ana]**0.5,
   color='red',
   dashes=(5, 2, 1, 2),
   label="Extra label on the legend") 
