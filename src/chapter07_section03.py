@@ -128,8 +128,8 @@ for kk in TIME_PLOTS:
 # -----------------------------------------------------------
 
 #create valid Mach number inputs
-M_ana_start = 0.001 #Mach nos. at x=0
-M_ana_end = 3.350 #Mach nos. at x=3
+M_ana_start = 0.1 #Mach nos. at x=0
+M_ana_end = 3.35 #Mach nos. at x=3
 M_ana_N = int((M_ana_end-M_ana_start)/0.01) + 1
 M_ana = np.linspace(
   M_ana_start, 
@@ -278,7 +278,6 @@ for jj in range(TIME_STEPS):
 # -----------------------------------------------------------
 
 #estimate percentage differences
-
 x_index_ana_num_diff = []
 for ii in np.arange(0.0,3.1,0.1):
   x_index_ana_num_diff.append((np.abs(x_ana - ii)).argmin())
@@ -286,6 +285,8 @@ for ii in np.arange(0.0,3.1,0.1):
     #identify closest value of analytically calculated x to 
     #throat (which is defined as 1.5)
     throat_index_ana = (np.abs(x_ana - ii)).argmin()
+
+D_pc_diff = ((D-D_ana[x_index_ana_num_diff])/D) * 100
 
 # -----------------------------------------------------------
 # Results - Table 7.3
@@ -313,7 +314,10 @@ print(df)
 df_ana_num_diff = pd.DataFrame(
     {'x': x_grid.tolist(),
      'area': A.tolist(),
-     'density (numerical)': D.tolist(),
+     'density (num)': D.tolist(),
+     'density (ana)': \
+       D_ana[x_index_ana_num_diff].tolist(),
+     'diff': D_pc_diff.tolist(),
      'mach': (U/np.power(T,0.5)).tolist(),
     })
 
