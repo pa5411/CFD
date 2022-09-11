@@ -25,6 +25,7 @@ GAMMA = 1.4 #ratio of specific heats
 TIME_STEPS = 1400
 COURANT_NUMBER = 0.5
 DX = 0.1 #grid spacing
+PLOT_RESULTS = True #plot graphical data (boolean)
 INT_PRECISION = np.int16
 FLOAT_PRECISION = np.float32
 EMPTY_TYPE = np.nan
@@ -532,4 +533,5 @@ plt.legend(
   legend_items, 
   loc="best")
 
-#plt.show()
+if PLOT_RESULTS == True:
+  plt.show()
