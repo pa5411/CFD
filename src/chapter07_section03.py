@@ -128,7 +128,7 @@ for kk in TIME_PLOTS:
 # -----------------------------------------------------------
 
 #create valid Mach number inputs
-M_ana_start = 0.1 #Mach nos. at x=0
+M_ana_start = 0.001 #Mach nos. at x=0
 M_ana_end = 3.350 #Mach nos. at x=3
 M_ana_N = int((M_ana_end-M_ana_start)/0.01) + 1
 M_ana = np.linspace(
@@ -155,8 +155,6 @@ _A_ana = _A_ana_sq**0.5
 for ii, M_A in enumerate(M_ana):
   if M_A <= 1:
     x_ana[ii] = -(np.power(((_A_ana[ii] - 1)/2.2),0.5)) + 1.5
-    if M_A == 1:
-      throat_ana_index = ii
   else:
     x_ana[ii] = np.power(((_A_ana[ii] - 1)/2.2),0.5) + 1.5
 
@@ -453,7 +451,7 @@ plt.ylabel("mdot")
 #plot analytical result as a horizontal line - this uses a 
 #formula which is only valid at the nozzle throat
 plt.axhline(
-  D_ana[throat_ana_index]*T_ana[throat_ana_index]**0.5,
+  D_ana[throat_index]*T_ana[throat_index]**0.5,
   color='red',
   dashes=(5, 2, 1, 2),
   label="Extra label on the legend") 
