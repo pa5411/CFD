@@ -158,11 +158,17 @@ for ii, M_A in enumerate(M_ana):
   else:
     x_ana[ii] = np.power(((_A_ana[ii] - 1)/2.2),0.5) + 1.5
 
-
 #calculate flow variables
 p_ana = _M_temp**(-GAMMA/(GAMMA-1))
 D_ana = _M_temp**(-1/(GAMMA-1))
 T_ana = _M_temp**-1
+
+#remove results which fall outside of valid domain of x
+M_ana = M_ana[x_ana >= 0] 
+p_ana = p_ana[x_ana >= 0]
+D_ana = D_ana[x_ana >= 0] 
+T_ana = T_ana[x_ana >= 0] 
+x_ana = x_ana[x_ana >= 0]
 
 results_ana = [M_ana, p_ana, D_ana, T_ana]
 
