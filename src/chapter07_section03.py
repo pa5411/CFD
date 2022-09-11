@@ -129,7 +129,7 @@ for kk in TIME_PLOTS:
 
 #create valid Mach number inputs
 M_ana_start = 0.1 #Mach nos. at x=0
-M_ana_end = 3.35 #Mach nos. at x=3
+M_ana_end = 3.350 #Mach nos. at x=3
 M_ana_N = int((M_ana_end-M_ana_start)/0.01) + 1
 M_ana = np.linspace(
   M_ana_start, 
@@ -274,6 +274,11 @@ for jj in range(TIME_STEPS):
 
 #estimate percentage differences
 
+x_index_ana_num_diff = []
+for ii in np.arange(0.0,3.0,0.1):
+  x_index_ana_num_diff.append((np.abs(x_ana - ii)).argmin())
+  
+
 # -----------------------------------------------------------
 # Results - Table 7.3
 # -----------------------------------------------------------
@@ -340,7 +345,6 @@ fig_ana.subplots_adjust(left=0.1,
                     wspace=0.4, 
                     hspace=0.4)
 
-throat_index = np.where(x_ana==1.5)
 results_ana_labels = [
   "M",
   r"$\frac{p}{p_o}$",
@@ -352,6 +356,7 @@ for ii in range(4):
   axs_ana[ii].axvline(1.5, color='r', linestyle='-.')
   
   throat_value = results_ana[ii][throat_index]
+  print('throat value:', throat_value)
   axs_ana[ii].axhline(
     throat_value, 
     color='r', 
