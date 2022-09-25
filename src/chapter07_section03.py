@@ -354,13 +354,14 @@ print()
 df_grid_dep = pd.DataFrame(
     {'density': D[throat_loc],
      'temp': T[throat_loc],
-     'pressure':  p[throat_loc],
+     'pressure': p[throat_loc],
      'mach': M[throat_loc]
     },
     index=[0])
 
 print()
 print('Table 7.5')
+print('Number of Points:', N)
 print(df_grid_dep)
 print()
 
