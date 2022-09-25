@@ -332,11 +332,11 @@ df_ana_num_diff = pd.DataFrame(
      'density (num)': D.tolist(),
      'density (ana)': \
        D_ana[x_index_ana_num_diff].tolist(),
-     'density ( %% diff)': D_pc_diff.tolist(),
+     'density (% diff)': D_pc_diff.tolist(),
      'Mach (num)': M.tolist(),
      'Mach (ana)': \
        M_ana[x_index_ana_num_diff].tolist(),
-     'Mach ( %% diff)': M_pc_diff.tolist()
+     "Mach (% diff)": M_pc_diff.tolist()
     })
 
 df_ana_num_diff.index = np.arange(1, len(df) + 1)
