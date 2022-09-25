@@ -288,14 +288,16 @@ x_index_ana_num_diff = []
 x_index_ana = []
 
 for ii in np.arange(0.0,3.1,0.1):
-  x_index_ana_num_diff.append((np.abs(x_ana - ii)).argmin())
+  closest_value = (np.abs(x_ana - ii)).argmin()
+
+  x_index_ana_num_diff.append(closest_value)
 
   if ii == 1.5:
-    throat_index_ana = (np.abs(x_ana - ii)).argmin()
+    throat_index_ana = closest_value
 
   #check for multiple of 0.3
   if math.isclose(ii%0.3, 0, abs_tol=ABS_TOLERANCE):
-    x_index_ana.append((np.abs(x_ana - ii)).argmin())
+    x_index_ana.append(closest_value)
 
 #estimate percentage differences
 D_pc_diff = ((D-D_ana[x_index_ana_num_diff])/D) * 100
