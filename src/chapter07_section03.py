@@ -282,21 +282,22 @@ for jj in range(TIME_STEPS):
 #calculate Mach number
 M = U/np.power(T,0.5)
 
-#estimate percentage differences
+#identify closest value of analytical calculation to a given
+#numerical value
 x_index_ana_num_diff = []
 x_index_ana = []
+
 for ii in np.arange(0.0,3.1,0.1):
   x_index_ana_num_diff.append((np.abs(x_ana - ii)).argmin())
 
   if ii == 1.5:
-    #identify closest value of analytically calculated x to 
-    #throat (which is defined as 1.5)
     throat_index_ana = (np.abs(x_ana - ii)).argmin()
 
-  #identify values at intervals of 0.3
+  #check for multiple of 0.3
   if math.isclose(ii%0.3, 0, abs_tol=ABS_TOLERANCE):
     x_index_ana.append((np.abs(x_ana - ii)).argmin())
 
+#estimate percentage differences
 D_pc_diff = ((D-D_ana[x_index_ana_num_diff])/D) * 100
 
 # -----------------------------------------------------------
