@@ -278,6 +278,9 @@ for jj in range(TIME_STEPS):
 # Post-Processing
 # -----------------------------------------------------------
 
+#calculate Mach number
+M = U/np.power(T,0.5)
+
 #estimate percentage differences
 x_index_ana_num_diff = []
 for ii in np.arange(0.0,3.1,0.1):
@@ -300,7 +303,7 @@ df = pd.DataFrame(
      'velocity': U.tolist(),
      'temp': T.tolist(),
      'pressure':  p.tolist(),
-     'mach': (U/np.power(T,0.5)).tolist(),
+     'mach': M.tolist(),
      'mdot': (D*A*U).tolist()
     })
 
@@ -319,7 +322,7 @@ df_ana_num_diff = pd.DataFrame(
      'density (ana)': \
        D_ana[x_index_ana_num_diff].tolist(),
      'density ( %% diff)': D_pc_diff.tolist(),
-     'mach (num)': (U/np.power(T,0.5)).tolist(),
+     'mach (num)': M.tolist(),
     })
 
 df_ana_num_diff.index = np.arange(1, len(df) + 1)
@@ -336,7 +339,7 @@ df_grid_dep = pd.DataFrame(
     {'density': D[throat_loc],
      'temp': T[throat_loc],
      'pressure':  p[throat_loc],
-     'mach': (U[throat_loc]/np.power(T[throat_loc],0.5))
+     'mach': M[throat_loc]
     },
     index=[0])
 
@@ -525,7 +528,7 @@ axs_right.plot(
 
 #plot numerical result
 axs_left.plot(x_grid, D, 'k-') #density
-axs_right.plot(x_grid,U/(T**0.5),'k-') #mach number
+axs_right.plot(x_grid, M,'k-') #mach number
 
 #plot legend
 legend_items = ['Exact analytical value', 'Numerical result']
