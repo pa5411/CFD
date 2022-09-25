@@ -301,6 +301,7 @@ for ii in np.arange(0.0,3.1,0.1):
 
 #estimate percentage differences
 D_pc_diff = ((D-D_ana[x_index_ana_num_diff])/D) * 100
+M_pc_diff = ((M-M_ana[x_index_ana_num_diff])/M) * 100
 
 # -----------------------------------------------------------
 # Results - Table 7.3
@@ -332,7 +333,10 @@ df_ana_num_diff = pd.DataFrame(
      'density (ana)': \
        D_ana[x_index_ana_num_diff].tolist(),
      'density ( %% diff)': D_pc_diff.tolist(),
-     'mach (num)': M.tolist(),
+     'Mach (num)': M.tolist(),
+     'Mach (ana)': \
+       M_ana[x_index_ana_num_diff].tolist(),
+     'Mach ( %% diff)': M_pc_diff.tolist()
     })
 
 df_ana_num_diff.index = np.arange(1, len(df) + 1)
