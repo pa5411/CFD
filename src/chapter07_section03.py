@@ -132,7 +132,7 @@ for kk in TIME_PLOTS:
 #create valid Mach number inputs
 M_ana_start = 0.1 #Mach nos. at x=0
 M_ana_end = 3.35 #Mach nos. at x=3
-M_ana_N = int((M_ana_end-M_ana_start)/0.01) + 1
+M_ana_N = int((M_ana_end-M_ana_start)/0.001) + 1
 M_ana = np.linspace(
   M_ana_start, 
   M_ana_end, 
@@ -279,8 +279,9 @@ for jj in range(TIME_STEPS):
 # Post-Processing
 # -----------------------------------------------------------
 
-#calculate Mach number
+#calculate other results
 M = U/np.power(T,0.5)
+mdot = D*A*U
 
 #identify closest value of analytical calculation to a given
 #numerical value
@@ -315,7 +316,7 @@ df = pd.DataFrame(
      'temp': T.tolist(),
      'pressure':  p.tolist(),
      'mach': M.tolist(),
-     'mdot': (D*A*U).tolist()
+     'mdot': mdot.tolist()
     })
 
 df.index = np.arange(1, len(df) + 1)
