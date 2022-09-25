@@ -318,8 +318,8 @@ df_ana_num_diff = pd.DataFrame(
      'density (num)': D.tolist(),
      'density (ana)': \
        D_ana[x_index_ana_num_diff].tolist(),
-     'diff': D_pc_diff.tolist(),
-     'mach': (U/np.power(T,0.5)).tolist(),
+     'density ( %% diff)': D_pc_diff.tolist(),
+     'mach (num)': (U/np.power(T,0.5)).tolist(),
     })
 
 df_ana_num_diff.index = np.arange(1, len(df) + 1)
