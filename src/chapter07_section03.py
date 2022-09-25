@@ -288,13 +288,14 @@ mdot = D*A*U
 x_index_ana_num_diff = []
 x_index_ana = []
 
+
 for ii in np.arange(0.0,3.1,0.1):
   closest_value = (np.abs(x_ana - ii)).argmin()
 
   x_index_ana_num_diff.append(closest_value)
 
   if ii == 1.5:
-    throat_index_ana = closest_value
+    x_index_throat_ana = closest_value
 
   #check for multiple of 0.3
   if math.isclose(ii%0.3, 0, abs_tol=ABS_TOLERANCE):
@@ -386,7 +387,7 @@ for ii in range(4):
   axs_ana[ii].scatter(x_ana, results_ana[ii], s=1, color='k')
   axs_ana[ii].axvline(1.5, color='r', linestyle='-.')
   
-  throat_value = results_ana[ii][throat_index_ana]
+  throat_value = results_ana[ii][x_index_throat_ana]
   axs_ana[ii].axhline(
     throat_value, 
     color='r', 
@@ -480,7 +481,7 @@ plt.ylabel("mdot")
 #plot analytical result as a horizontal line - this uses a 
 #formula which is only valid at the nozzle throat
 plt.axhline(
-  D_ana[throat_index_ana]*T_ana[throat_index_ana]**0.5,
+  D_ana[x_index_throat_ana]*T_ana[x_index_throat_ana]**0.5,
   color='red',
   dashes=(5, 2, 1, 2),
   label="Extra label on the legend") 
