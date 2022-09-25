@@ -284,7 +284,7 @@ M = U/np.power(T,0.5)
 
 #estimate percentage differences
 x_index_ana_num_diff = []
-idx_results_ana = []
+x_index_ana = []
 for ii in np.arange(0.0,3.1,0.1):
   x_index_ana_num_diff.append((np.abs(x_ana - ii)).argmin())
 
@@ -295,7 +295,7 @@ for ii in np.arange(0.0,3.1,0.1):
 
   #identify values at intervals of 0.3
   if math.isclose(ii%0.3, 0, abs_tol=ABS_TOLERANCE):
-    idx_results_ana.append((np.abs(x_ana - ii)).argmin())
+    x_index_ana.append((np.abs(x_ana - ii)).argmin())
 
 D_pc_diff = ((D-D_ana[x_index_ana_num_diff])/D) * 100
 
@@ -519,13 +519,13 @@ axs_right.annotate(
   arrowprops = arrow_style)   
 
 axs_left.plot(
-  x_ana[idx_results_ana], 
-  D_ana[idx_results_ana], 
+  x_ana[x_index_ana], 
+  D_ana[x_index_ana], 
   'ro')
   
 axs_right.plot(
-  x_ana[idx_results_ana], 
-  M_ana[idx_results_ana], 
+  x_ana[x_index_ana], 
+  M_ana[x_index_ana], 
   'ro')
 
 #plot numerical result
