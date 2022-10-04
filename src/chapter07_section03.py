@@ -361,10 +361,10 @@ df_grid_dep = pd.DataFrame(
      'pressure': p[throat_loc],
      'mach': M[throat_loc]
     },
-    index=[0])
+    index=[N])
 
 print()
-print('Table 7.5 - Results at Throat')
+print('Table 7.5 - Results at Throat - Number of Points')
 print('Number of Points:', N)
 print(df_grid_dep)
 print()
