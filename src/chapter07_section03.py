@@ -1,5 +1,6 @@
 # -----------------------------------------------------------
 # 1D Maccormack scheme for supersonic-subsonic nozzle
+# Author: pa5411
 # -----------------------------------------------------------
 
 # -----------------------------------------------------------
@@ -24,7 +25,7 @@ NOZZLE_LENGTH = 3
 GAMMA = 1.4 #ratio of specific heats
 TIME_STEPS = 1400
 COURANT_NUMBER = 0.5
-DX = 0.1 #grid spacing
+DX = 0.5 #grid spacing
 PLOT_RESULTS = True #plot graphical data (boolean)
 INT_PRECISION = np.int16
 FLOAT_PRECISION = np.float32
@@ -303,6 +304,7 @@ for ii in np.arange(0.0,3+DX,DX):
 
 D_pc_diff = ((D-D_ana[x_index_ana_num_diff])/D) * 100
 M_pc_diff = ((M-M_ana[x_index_ana_num_diff])/M) * 100
+
 
 # -----------------------------------------------------------
 # Results - Table 7.3
