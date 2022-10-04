@@ -320,7 +320,10 @@ df = pd.DataFrame(
     })
 
 df.index = np.arange(1, len(df) + 1)
-print('Table 7.3')
+title_table_7_3 = \
+  'Table 7.3 - Results across nozzle after {} steps' \
+    .format(TIME_STEPS)
+print(title_table_7_3)
 print(df)
 
 # -----------------------------------------------------------
@@ -342,7 +345,9 @@ df_ana_num_diff = pd.DataFrame(
 
 df_ana_num_diff.index = np.arange(1, len(df) + 1)
 print()
-print('Table 7.4')
+title_table_7_4 = 'Table 7.4 - Results across nozzle' \
+  + ', percentage differences'
+print(title_table_7_4)
 print(df_ana_num_diff)
 print()
 
@@ -359,7 +364,7 @@ df_grid_dep = pd.DataFrame(
     index=[0])
 
 print()
-print('Table 7.5')
+print('Table 7.5 - Results at Throat')
 print('Number of Points:', N)
 print(df_grid_dep)
 print()
