@@ -24,7 +24,7 @@ NOZZLE_LENGTH = 3
 GAMMA = 1.4 #ratio of specific heats
 TIME_STEPS = 1400
 COURANT_NUMBER = 0.5
-DX = 0.05 #grid spacing
+DX = 0.1 #grid spacing
 PLOT_RESULTS = True #plot graphical data (boolean)
 INT_PRECISION = np.int16
 FLOAT_PRECISION = np.float32
@@ -368,6 +368,26 @@ print('Table 7.5 - Results at Throat')
 print('Number of Points:', N)
 print(df_grid_dep)
 print()
+
+# -----------------------------------------------------------
+# Results - Table 7.6
+# -----------------------------------------------------------
+
+df_courant = pd.DataFrame(
+    {'density': D[throat_loc],
+     'temp': T[throat_loc],
+     'pressure': p[throat_loc],
+     'mach': M[throat_loc]
+    },
+    index=[COURANT_NUMBER])
+
+print()
+print('Table 7.6 - Results at Throat - Courant Number')
+print('Number of Points:', N)
+print('Courant Number:', COURANT_NUMBER)
+print(df_courant)
+print()
+
 
 # -----------------------------------------------------------
 # Results - Figure 7.2
