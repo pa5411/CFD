@@ -17,3 +17,6 @@ libraries.
 
 * 7-3 - 1D Subsonic-Supersonic Isentropic Nozzle Flow w/ MacCormack's Technique
     * nonconservation form
+
+* 7-4 - 1D Subsonic Isentropic Nozzle Flow w/ MacCormack's Technique
+    * nonconservation form
