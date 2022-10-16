@@ -70,9 +70,9 @@ U = 0.05 + 0.11*x_grid #velocity
 A = np.empty(N, dtype=FLOAT_PRECISION)
 
 for ii in range(N):
-  if ii <= 1.5:
+  if x_grid[ii] <= 1.5:
     multiplier = 2.2
-  if ii > 1.5:
+  if x_grid[ii] > 1.5:
     multiplier = 0.2223
   #nozzle shape
   A[ii] = 1 + multiplier*np.power((x_grid[ii]-1.5),2) 
