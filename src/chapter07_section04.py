@@ -59,10 +59,21 @@ step_nos = np.linspace(
 # initial conditions for CFD
 # -----------------------------------------------------------
 
-D = 1 - 0.3146*x_grid #density
-T = 1 - 0.2314*x_grid #temperature
-U = (0.1 + 1.09*x_grid)*np.power(T,0.5) #velocity
-A = 1 + 2.2*np.power((x_grid-1.5),2) #nozzle shape
+D = 1 - 0.023*x_grid #density
+T = 1 - 0.009333*x_grid #temperature
+U = 0.05 + 0.11*x_grid #velocity
+
+#array to store Area
+A = np.empty(N, dtype=FLOAT_PRECISION)
+
+for ii in range(N):
+  if ii <= 1.5:
+    multiplier = 2.2
+  if ii > 1.5:
+    multiplier = 0.2223
+  #nozzle shape
+  A[ii] = 1 + multiplier*np.power((x_grid[ii]-1.5),2) 
+
 A_log = np.log(A)
 
 # -----------------------------------------------------------
