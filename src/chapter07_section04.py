@@ -144,6 +144,13 @@ for kk in TIME_PLOTS:
 # set up analytical calculation for comparison with CFD
 # -----------------------------------------------------------
 
+#calculate exit Mach Number
+M_ana_exit_sq = \
+  (PRESSURE_RATIO**(-((GAMMA-1)/GAMMA)) - 1)  \
+  / ((GAMMA-1)/2)
+M_ana_exit = M_ana_exit_sq ** 0.5
+
+
 #create valid Mach number inputs
 
 '''
