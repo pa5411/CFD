@@ -32,6 +32,9 @@ FLOAT_PRECISION = np.float32
 EMPTY_TYPE = np.nan
 ABS_TOLERANCE = 1e-15 #used for modulo comparisons
 
+#specify pressure ratio for the subsonic case
+PRESSURE_RATIO = 0.93
+
 #specify iterations to plot data
 TIME_PLOTS = [0, 50, 100, 150, 200, 700] 
 
@@ -268,10 +271,10 @@ for jj in range(TIME_STEPS):
   T[0] = 1 #fixed inflow temperature
   p[0] = D[0]*T[0] #derived inflow pressure
   U[0] = 2*U[1] - U[2] #floating inflow velocity 
+  p[N-1] = PRESSURE_RATIO #derived outflow pressure
   D[N-1] = 2*D[N-2] - D[N-3] #floating outflow density
   U[N-1] = 2*U[N-2] - U[N-3] #floating outflow velocity
-  T[N-1] = 2*T[N-2] - T[N-3] #floating outflow temperature
-  p[N-1] = D[N-1]*T[N-1] #derived outflow pressure
+  T[N-1] = p[N-1]/D[N-1] #floating outflow temperature
 
   #store results at one location per time step
   D_loc[jj] = D[throat_loc]
