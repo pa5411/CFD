@@ -23,7 +23,7 @@ import math
 
 NOZZLE_LENGTH = 3 
 GAMMA = 1.4 #ratio of specific heats
-TIME_STEPS = 1400
+TIME_STEPS = 5000
 COURANT_NUMBER = 0.5
 DX = 0.1 #grid spacing
 PLOT_RESULTS = True #plot graphical data (boolean)
@@ -294,7 +294,25 @@ for jj in range(TIME_STEPS):
 # Post-Processing
 # -----------------------------------------------------------
 
+# -----------------------------------------------------------
+# Results - Table 7.3
+# -----------------------------------------------------------
 
+df = pd.DataFrame(
+    {'x': x_grid.tolist(),
+     'area': A.tolist(),
+     'density': D.tolist(),
+     'velocity': U.tolist(),
+     'temp': T.tolist(),
+     'pressure': p.tolist(),
+    })
+
+df.index = np.arange(1, len(df) + 1)
+title_table_7_7 = \
+  'Table 7.7 - Results across nozzle after {} steps' \
+    .format(TIME_STEPS)
+print(title_table_7_7)
+print(df)
 
 
 
