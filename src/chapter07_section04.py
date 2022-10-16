@@ -294,6 +294,10 @@ for jj in range(TIME_STEPS):
 # Post-Processing
 # -----------------------------------------------------------
 
+#calculate other results
+M = U/np.power(T,0.5)
+mdot = D*A*U
+
 # -----------------------------------------------------------
 # Results - Table 7.3
 # -----------------------------------------------------------
@@ -305,6 +309,8 @@ df = pd.DataFrame(
      'velocity': U.tolist(),
      'temp': T.tolist(),
      'pressure': p.tolist(),
+     'mach': M.tolist(),
+     'mdot': mdot.tolist()
     })
 
 df.index = np.arange(1, len(df) + 1)
