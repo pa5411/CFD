@@ -6,7 +6,7 @@
 
 ## Introduction
 
-Assignments completed for Computational Fluid Dynamics by John Anderson.
+Assignments completed for Computational Fluid Dynamics by John Anderson (ISBN: 9780071132107).
 
 ## Dependencies
 
