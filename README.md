@@ -15,8 +15,10 @@ libraries.
 
 ## Assignments 
 
-* 7-3 - 1D Subsonic-Supersonic Isentropic Nozzle Flow w/ MacCormack's Technique
+* 7-3 1D Subsonic-Supersonic Isentropic Nozzle Flow (src\chapter07_section03)
+    * MacCormack's Technique
     * nonconservation form
 
-* 7-4 - 1D Subsonic Isentropic Nozzle Flow w/ MacCormack's Technique
+* 7-4 1D Subsonic Isentropic Nozzle Flow (src\chapter07_section04)
+    * MacCormack's Technique
     * nonconservation form
