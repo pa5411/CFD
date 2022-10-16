@@ -145,6 +145,8 @@ for kk in TIME_PLOTS:
 # -----------------------------------------------------------
 
 #create valid Mach number inputs
+
+'''
 M_ana_start = 0.1 #Mach nos. at x=0
 M_ana_end = 3.35 #Mach nos. at x=3
 M_ana_N = int((M_ana_end-M_ana_start)/0.001) + 1
@@ -153,34 +155,45 @@ M_ana = np.linspace(
   M_ana_end, 
   M_ana_N, 
   dtype=FLOAT_PRECISION) 
+'''
 
 #create x points with which analytical data is stored
+
+'''
 x_ana = np.empty(M_ana_N, dtype=FLOAT_PRECISION)
 x_ana[:] = EMPTY_TYPE
+'''
 
 # -----------------------------------------------------------
 # analytical calculation
 # -----------------------------------------------------------
 
 #calculate normalised area
+'''
 _M_temp = 1 + 0.5*(GAMMA-1)*M_ana**2
 _M_exp = (GAMMA+1)/(GAMMA-1)
 _A_ana_sq = (1/M_ana**2) * ((2/(GAMMA+1)) * _M_temp)**_M_exp
 _A_ana = _A_ana_sq**0.5
+'''
 
 #calculate x points
+'''
 for ii, M_A in enumerate(M_ana):
   if M_A <= 1:
     x_ana[ii] = -(np.power(((_A_ana[ii] - 1)/2.2),0.5)) + 1.5
   else:
     x_ana[ii] = np.power(((_A_ana[ii] - 1)/2.2),0.5) + 1.5
+'''
 
 #calculate flow variables
+'''
 p_ana = _M_temp**(-GAMMA/(GAMMA-1))
 D_ana = _M_temp**(-1/(GAMMA-1))
 T_ana = _M_temp**-1
+'''
 
 #remove results which fall outside of valid domain of x
+'''
 M_ana = M_ana[x_ana >= 0] 
 p_ana = p_ana[x_ana >= 0]
 D_ana = D_ana[x_ana >= 0] 
@@ -188,6 +201,7 @@ T_ana = T_ana[x_ana >= 0]
 x_ana = x_ana[x_ana >= 0]
 
 results_ana = [M_ana, p_ana, D_ana, T_ana]
+'''
 
 # -----------------------------------------------------------
 # maccormack CFD scheme
